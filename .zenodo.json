@@ -1,0 +1,28 @@
+{
+  "title": "Cardinal Grid Notes: reproducible technical notes on U.S. load forecasting and grid data quality",
+  "upload_type": "publication",
+  "publication_type": "technicalnote",
+  "license": "CC-BY-4.0",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Guerra Filho, Ricardo Wagner Correia",
+      "affiliation": "Cardinal Grid (independent)"
+    }
+  ],
+  "keywords": [
+    "load forecasting",
+    "EIA-930",
+    "balancing authority",
+    "grid reliability",
+    "data quality",
+    "open data",
+    "reproducible research"
+  ],
+  "description": "<p>Short, reproducible technical notes on U.S. load-forecasting and data-quality problems, each with the code and data snapshot behind it. Published first at <a href=\"https://cardinalgrid.com/notes\">cardinalgrid.com/notes</a>. Text and figures CC BY 4.0; code Apache-2.0.</p>",
+  "related_identifiers": [
+    { "identifier": "https://github.com/cardinalgrid/notes", "relation": "isSupplementTo", "scheme": "url" },
+    { "identifier": "https://cardinalgrid.com/notes", "relation": "isIdenticalTo", "scheme": "url" }
+  ],
+  "communities": [{ "identifier": "cardinal-grid" }]
+}
