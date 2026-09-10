@@ -76,6 +76,6 @@ python analysis.py --rebuild     # downloads the EIA-930 files (~1 GB) and rebui
 
 ## Cite
 
-Guerra Filho, R. W. C. (2026). *How well do U.S. balancing authorities forecast their own load? A 2015–2026 scorecard from EIA-930.* Cardinal Grid Notes, No. 1. DOI: to be assigned on publication.
+Guerra Filho, R. W. C. ([ORCID 0000-0001-6699-9951](https://orcid.org/0000-0001-6699-9951)) (2026). *How well do U.S. balancing authorities forecast their own load? A 2015–2026 scorecard from EIA-930.* Cardinal Grid Notes, No. 1. DOI: to be assigned on publication.
 
 *Text and figures CC BY 4.0; code Apache-2.0. Analyses rely on public data only and represent the author's own views.*

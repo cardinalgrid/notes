@@ -7,7 +7,8 @@
   "creators": [
     {
       "name": "Guerra Filho, Ricardo Wagner Correia",
-      "affiliation": "Cardinal Grid (independent)"
+      "affiliation": "Cardinal Grid (independent)",
+      "orcid": "0000-0001-6699-9951"
     }
   ],
   "keywords": [
@@ -21,8 +22,20 @@
   ],
   "description": "<p>Short, reproducible technical notes on U.S. load-forecasting and data-quality problems, each with the code and data snapshot behind it. Published first at <a href=\"https://cardinalgrid.com/notes\">cardinalgrid.com/notes</a>. Text and figures CC BY 4.0; code Apache-2.0.</p>",
   "related_identifiers": [
-    { "identifier": "https://github.com/cardinalgrid/notes", "relation": "isSupplementTo", "scheme": "url" },
-    { "identifier": "https://cardinalgrid.com/notes", "relation": "isIdenticalTo", "scheme": "url" }
+    {
+      "identifier": "https://github.com/cardinalgrid/notes",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://cardinalgrid.com/notes",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    }
   ],
-  "communities": [{ "identifier": "cardinal-grid" }]
+  "communities": [
+    {
+      "identifier": "cardinal-grid"
+    }
+  ]
 }
