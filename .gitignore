@@ -4,3 +4,4 @@ paper/paper.blg
 paper/paper.log
 paper/paper.out
 __pycache__/
+paper/.zenodo_deposit.json
