@@ -6,13 +6,15 @@
 
 ## The question
 
-Every U.S. balancing authority (BA) publishes, through the U.S. Energy Information Administration's Form EIA-930, two hourly numbers: the demand that actually occurred, and the day-ahead demand forecast the BA itself submitted the morning before. Since July 2015 that pair has been public for every BA in the Lower 48. So the question "how well do operators forecast their own load?" does not need any operator's cooperation. It needs a script.
+Every U.S. balancing authority (BA) publishes, through the U.S. Energy Information Administration's Form EIA-930, two hourly numbers: the demand that actually occurred, and the day-ahead demand forecast the BA itself submitted the day before. BAs are the entities that keep generation, load and interchange in balance in real time and buy reserves against their own forecast. In the U.S. that role is held by ISOs/RTOs such as ERCOT and PJM, by vertically integrated utilities such as Duke Energy, and by federal entities such as TVA; the scorecard measures all of them on the same footing. Since July 2015 that pair has been public for every BA in the Lower 48. So the question "how well do operators forecast their own load?" does not need any operator's cooperation. It needs a script.
 
 This matters because the day-ahead forecast is what operators commit generation and buy reserves against. When it is too low, reserves are short. FERC and NERC documented day-ahead load under-forecasts of up to 11.6% at one BA during Winter Storm Elliott, contributing to firm load shed ([FERC/NERC 2023](https://www.ferc.gov/news-events/news/ferc-nerc-release-final-report-lessons-winter-storm-elliott)); NERC's 2025 Long-Term Reliability Assessment states that traditional load forecasting methods may not be sufficient for the load growth ahead ([NERC 2026](https://www.nerc.com/globalassets/our-work/assessments/nerc_ltra_2025.pdf)).
 
 ## What was measured
 
 - Source: EIA-930 six-month balance files, {first_date} to {last_date}, {n_total} BAs in the files.
+- What the two series are, in EIA's own terms: "hourly integrated values in megawatts by hour ending time", i.e. average MW over each hour, time-stamped in UTC. `D` is actual demand; `DF` is the "day-ahead demand forecast", which each BA's daily file must contain as "yesterday's hourly day-ahead demand forecast for today". Files are due by 7:00 a.m. Eastern.
+- What EIA does not specify: the forecasting method, its inputs, or the time of day the forecast is produced. The instructions say a BA that does not produce a comparable forecast in the normal course of business is not required to build one for EIA and should "report the day-ahead demand forecast generated in the normal course of business". The forecast is therefore each BA's operational day-ahead forecast, as it was, made with whatever data the BA had at its own cut-off time.
 - For each BA-day with at least 20 valid hours: MAPE, bias, RMSE, and the error at the hour of the actual daily peak (`peak_hour_pct_error`, negative = forecast below actual). {ba_days} BA-days and {hours} hours were scored.
 - Data-quality rules, applied before any error is computed: hours with demand or forecast ≤ 0 are excluded; hours where forecast/demand falls outside [1/2, 2] are flagged as implausible (a zero, a unit error, a stale value) and excluded. {implausible} hours were flagged. EIA-imputed demand values were {imputed} of scored hours.
 - Ranking eligibility: at least 180 scored days, mean demand ≥ 500 MW, and a median daily bias within ±25% (beyond that, forecast and demand are not describing the same quantity). {n_scored} BAs report both series; **{n_eligible} are eligible**.
@@ -59,7 +61,8 @@ The largest single eligible BA-day miss in the whole period is {worst_ba} on {wo
 
 ## What this does not show
 
-- Forecasts are as submitted to EIA and may differ from what operators used internally; EIA's quality checks apply to demand, not forecasts.
+- Forecasts are as submitted to EIA and may differ from what operators used internally; EIA's revision rules apply to measured data, not to the forecast.
+- The forecast horizon is not the same for every BA. A forecast closed at 9 a.m. the day before covers 15 to 39 hours ahead; one closed at 5 p.m. covers 7 to 31. EIA does not record the cut-off time, so part of the difference between BAs is horizon, not skill. Comparisons across BAs should be read with that in mind; comparisons of the same BA over time are not affected.
 - Several small BAs' series contain errors the implausibility band does not catch. Their MAPE says "data or forecast problem", not "forecast problem".
 - Event windows are fixed dates, not weather-defined extreme days. Weather attribution comes with v0.2 of the scorer.
 - No BA has been contacted for comment. Corrections are welcome: open an issue on the [scorer repository](https://github.com/cardinalgrid/ba-forecast-scorecard/issues).
