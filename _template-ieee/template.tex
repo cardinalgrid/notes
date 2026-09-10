@@ -1,7 +1,5 @@
-% Cardinal Grid Notes: IEEE conference-style template (IEEEtran, two columns).
-% Build:  pdflatex paper && bibtex paper && pdflatex paper && pdflatex paper
-% Rules:  figures 3.5in (one column) or 7.16in (two columns); no titles inside figures, use captions;
-%         impersonal voice; every number produced by the analysis script; every claim with a citation.
+% Cardinal Grid Notes: IEEE conference template (IEEEtran, two columns).
+% Build: pdflatex paper && bibtex paper && pdflatex paper && pdflatex paper
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
 \usepackage[utf8]{inputenc}
@@ -27,7 +25,7 @@ ORCID 0000-0001-6699-9951 \quad contact@cardinalgrid.com}}
 \maketitle
 
 \begin{abstract}
-Two hundred words at most. Problem, data, method, main quantitative results, limitation, and where the code is.
+Abstract.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -35,32 +33,32 @@ load forecasting, balancing authority, EIA-930, forecast evaluation, data qualit
 \end{IEEEkeywords}
 
 \section{Introduction}
-Context and the specific question, with citations to the public record.
+Introduction.
 
 \section{Data}
-Source, definitions in the data owner's own terms, coverage.
+Data sources, definitions and coverage.
 
 \section{Methods}
-Metrics with equations, data-quality rules, eligibility, event windows.
+Metrics and procedures.
 
 \section{Results}
-Figures and tables only; interpretation goes to the Discussion.
+Results.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig1.pdf}
-\caption{Caption written as a full sentence, including the data source and the period.}
+\caption{Caption.}
 \label{fig:one}
 \end{figure}
 
 \section{Discussion}
-What the results mean, what they do not show, what comes next.
+Discussion and limitations.
 
 \section{Conclusion}
-Three sentences.
+Conclusion.
 
 \section*{Data and Code Availability}
-Public data sources and the archived code with its DOI.
+Data sources and archived code.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

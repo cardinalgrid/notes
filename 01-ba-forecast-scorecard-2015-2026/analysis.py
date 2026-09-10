@@ -2,7 +2,7 @@
 
 Reproducible analysis. Reads the results produced by `ba-forecast-scorecard` (or rebuilds them from the
 public EIA-930 files if `--rebuild` is given), writes the figures used in the note and fills the
-numbers into README.md from a template, so that no figure or number in the note is typed by hand.
+numbers into README.md from a template, so that the note is reproducible from the data.
 
 Usage
 -----
