@@ -52,7 +52,7 @@ The tail is not, for the most part, bad forecasting. The BAs with the highest MA
 
 ![Yearly MAPE](figures/fig2_yearly_major.png)
 
-Two trends in this chart deserve their own note before any conclusion is drawn: the rise in CISO's and SWPP's yearly MAPE since 2023, and AZPS's 2015 value. Each could be forecasting, a change in what the BA reports, or both. 2026 covers January to June only.
+Two trends in this chart deserve their own note before any conclusion is drawn: the rise in CISO's and SWPP's yearly MAPE since 2023, and AZPS's 2015 value. Each could be forecasting, a change in what the BA reports, or both. 2026 covers January to September only.
 
 ### 3. At the peak hour, forecasts lean low
 

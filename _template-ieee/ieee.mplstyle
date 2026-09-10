@@ -1,0 +1,31 @@
+# Matplotlib style for IEEE two-column papers (IEEEtran).
+# Single-column figure width: 3.5 in. Double-column: 7.16 in.
+# Text in figures should be 8-9 pt, matching IEEEtran caption size.
+figure.figsize      : 3.5, 2.4
+figure.dpi          : 200
+savefig.dpi         : 300
+savefig.bbox        : tight
+savefig.pad_inches  : 0.02
+font.family         : serif
+font.serif          : Times New Roman, Times, Nimbus Roman, DejaVu Serif
+font.size           : 8
+axes.titlesize      : 8
+axes.labelsize      : 8
+xtick.labelsize     : 7
+ytick.labelsize     : 7
+legend.fontsize     : 7
+legend.frameon      : False
+axes.linewidth      : 0.6
+axes.spines.top     : False
+axes.spines.right   : False
+axes.grid           : True
+axes.grid.axis      : y
+grid.alpha          : 0.25
+grid.linewidth      : 0.4
+lines.linewidth     : 1.0
+lines.markersize    : 2.5
+xtick.major.width   : 0.6
+ytick.major.width   : 0.6
+xtick.direction     : out
+ytick.direction     : out
+axes.prop_cycle     : cycler('color', ['1F3A5F', 'CC2000', '46B2B4', '6B7280', 'E69F00', '009E73', 'CC79A7', '56B4E9', '000000', '999999'])

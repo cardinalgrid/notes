@@ -72,7 +72,7 @@ def fig_yearly_major(yearly: pd.DataFrame) -> Path:
     for ba, g in y.groupby("ba"):
         g = g.sort_values("year")
         ax.plot(g["year"], g["mape"] * 100, marker="o", ms=3, lw=1.2, label=ba)
-    style(ax, "Yearly MAPE, largest balancing authorities (2026 = Jan to Jun)", "MAPE, %")
+    style(ax, "Yearly MAPE, largest balancing authorities (* = partial year)", "MAPE, %")
     yrs = sorted(y["year"].unique())
     ax.set_xticks(yrs)
     ax.set_xticklabels([f"{v}*" if v == max(yrs) else str(v) for v in yrs])
@@ -145,8 +145,11 @@ def render_readme(d: dict, figs: list[Path]) -> None:
     bottom = ", ".join(f"{r['ba']} ({pct(r['mape'])})" for r in s["ranking_overall_bottom5"])
     w = s["worst_single_day_under_forecast_at_peak_eligible"]
 
+    last = pd.Timestamp(s["last_date"])
+    partial = "" if (last.month == 12 and last.day == 31) else f"{last.year} covers January to {last.strftime('%B')} only."
     tpl = (HERE / "README.template.md").read_text(encoding="utf-8")
     out = tpl.format(
+        partial_year_note=partial,
         first_date=s["first_date"],
         last_date=s["last_date"],
         generated=s["generated_at_utc"][:10],

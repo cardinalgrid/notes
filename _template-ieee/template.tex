@@ -1,0 +1,68 @@
+% Cardinal Grid Notes: IEEE conference-style template (IEEEtran, two columns).
+% Build:  pdflatex paper && bibtex paper && pdflatex paper && pdflatex paper
+% Rules:  figures 3.5in (one column) or 7.16in (two columns); no titles inside figures, use captions;
+%         impersonal voice; every number produced by the analysis script; every claim with a citation.
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{Title of the Note\\
+\large Cardinal Grid Notes, No.\ N}
+
+\author{\IEEEauthorblockN{Ricardo W. C. Guerra Filho}
+\IEEEauthorblockA{Cardinal Grid (independent open initiative)\\
+ORCID 0000-0001-6699-9951 \quad contact@cardinalgrid.com}}
+
+\maketitle
+
+\begin{abstract}
+Two hundred words at most. Problem, data, method, main quantitative results, limitation, and where the code is.
+\end{abstract}
+
+\begin{IEEEkeywords}
+load forecasting, balancing authority, EIA-930, forecast evaluation, data quality
+\end{IEEEkeywords}
+
+\section{Introduction}
+Context and the specific question, with citations to the public record.
+
+\section{Data}
+Source, definitions in the data owner's own terms, coverage.
+
+\section{Methods}
+Metrics with equations, data-quality rules, eligibility, event windows.
+
+\section{Results}
+Figures and tables only; interpretation goes to the Discussion.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig1.pdf}
+\caption{Caption written as a full sentence, including the data source and the period.}
+\label{fig:one}
+\end{figure}
+
+\section{Discussion}
+What the results mean, what they do not show, what comes next.
+
+\section{Conclusion}
+Three sentences.
+
+\section*{Data and Code Availability}
+Public data sources and the archived code with its DOI.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
