@@ -10,3 +10,4 @@ paper/.zenodo_deposit.json
 03-daily-load-profiles/.ruff_cache/
 03-daily-load-profiles/paper/paper.tex
 03-daily-load-profiles/paper/references.bib
+03-daily-load-profiles/data/

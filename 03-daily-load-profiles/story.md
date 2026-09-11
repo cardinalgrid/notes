@@ -56,7 +56,11 @@ Almost none of them are holidays. They are dates like 1 November 2019, 1 Novembe
 
 ![Morning-peak days by month, and the gain from a heating/cooling split](figures/fig9_regime.png)
 
-The left panel shows how common a "morning-peak day" is through the year for five operators. In Florida, Georgia and the Carolinas, more than 40% of December and January days peak in the morning. In California, New York and New England, almost none do; their winters run on gas. The right panel shows what you gain by treating "heating day" and "cooling day" as two different day types: up to 19% less error in the Southeast, 10% on average if you know today's weather, and still 4% if all you know is what yesterday was like.
+The left panel shows how common a "morning-peak day" is through the year for five operators. In Florida, Georgia and the Carolinas, more than 40% of December and January days peak in the morning. In California, New York and New England, almost none do; their winters run on gas. The right panel shows what you gain by treating "heating day" and "cooling day" as two different day types, judged from the load itself: up to 19% less error in the Southeast, 10% on average.
+
+Then I did it properly, with a thermometer. For each operator I took the hourly temperature at one airport from NOAA, ten years of it, and called a day a heating day when its mean was below 15 °C, a cooling day above 22 °C, and mild in between. That simple three-way split cuts the error by **15%** on average, in every single operator. And here is the useful part: **yesterday's temperature works just as well as today's**. You do not need a weather forecast. You need to have looked out of the window yesterday.
+
+![Morning-peak share against temperature, and the gain from a temperature split](figures/fig11_temperature.png)
 
 For anyone building an anomaly detector this is the headline: **a detector that compares readings with a calendar profile will raise its loudest alarm of the year on the first cold morning**, and that alarm is wrong. The readings are real. The profile is what is missing something.
 
@@ -83,7 +87,7 @@ If you build anything on top of daily load profiles in the U.S., the evidence po
 1. **Three day types, not seven.** Workday, Saturday, Sunday.
 2. **Look back two weeks, plus the same three weeks of last year.** Not a fixed season. Not a long window.
 3. **A short holiday list**, mapped to a Saturday or Sunday profile as above, and nothing for the four minor federal holidays.
-4. **Add the weather.** A heating-versus-cooling day type, from a temperature forecast if you have one, from yesterday if you do not.
+4. **Add the weather.** Three day types by temperature: heating below 15 °C, cooling above 22 °C, mild in between. From a forecast if you have one, from yesterday if you do not. Put together with the rest, this cuts the error by about 10% against the plain three-type profile, more than everything the calendar can offer combined.
 
 ## Where this comes from
 

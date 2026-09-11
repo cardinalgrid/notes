@@ -31,6 +31,10 @@ def main() -> int:
         "regime_oracle": f"{ro['mean_gain_rel_pct']:.0f}%",
         "regime_prev": f"{rp['mean_gain_rel_pct']:.0f}%",
         "generated": s["generated"][:10],
+        "t_heat": f"{s['temperature']['t_heat_c']:.0f}",
+        "t_cool": f"{s['temperature']['t_cool_c']:.0f}",
+        "g3t3_gain": f"{s['temperature']['G3T3_vs_G3']['mean_gain_rel_pct']:.0f}%",
+        "best_gain": f"{s['temperature']['best_config']['BEST_vs_G3_w2']['mean_gain_rel_pct']:.0f}%",
     }
     text = (HERE / "story.template.md").read_text(encoding="utf-8")
     for k, v in vals.items():

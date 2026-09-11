@@ -156,6 +156,39 @@ def fig_examples(sh: pd.DataFrame) -> None:
     plt.close(fig)
 
 
+def fig_temperature(sh: pd.DataFrame, tT: pd.DataFrame, tR: pd.DataFrame, tTp: pd.DataFrame, t_heat: float) -> None:
+    fig, axes = plt.subplots(1, 2, figsize=(TWO, 3.0), gridspec_kw={"width_ratios": [1, 1.3]})
+    ax = axes[0]
+    d = sh.dropna(subset=["tmean_c"])
+    bins = np.arange(-15, 36, 2.5)
+    for ba, color in (("FPC", RED), ("SOCO", ORANGE), ("PJM", NAVY), ("ERCO", TEAL), ("CISO", GRAY)):
+        g = d[d["ba"] == ba]
+        m = g.groupby(pd.cut(g["tmean_c"], bins), observed=True)["regime"].agg(["mean", "size"])
+        m = m[m["size"] >= 15]
+        ax.plot([iv.mid for iv in m.index], m["mean"] * 100, marker="o", color=color, label=ba)
+    ax.axvline(t_heat, color=RED, ls="--", lw=0.6)
+    ax.set_xlabel("daily mean temperature, $^\\circ$C")
+    ax.set_ylabel("morning-peak days, %")
+    ax.legend(ncol=2)
+    ax = axes[1]
+    t = tT.set_index("ba")["gain_rel_pct"].sort_values()
+    r = tR.set_index("ba")["gain_rel_pct"].reindex(t.index)
+    p = tTp.set_index("ba")["gain_rel_pct"].reindex(t.index)
+    y = np.arange(len(t))
+    ax.barh(y + 0.27, t.to_numpy(), height=0.27, color=RED, label="temperature, same day")
+    ax.barh(y, r.to_numpy(), height=0.27, color=GRAY, label="peak hour, same day")
+    ax.barh(y - 0.27, p.to_numpy(), height=0.27, color=NAVY, label="temperature, previous day")
+    ax.set_yticks(y)
+    ax.set_yticklabels(t.index, fontsize=3.8)
+    ax.axvline(0, color=GRAY, lw=0.6)
+    ax.set_xlabel("relative reduction of shape MAPE, %")
+    ax.grid(axis="y", visible=False)
+    ax.grid(axis="x", alpha=0.25)
+    ax.legend(loc="lower right")
+    fig.savefig(FIG / "fig7_temperature.pdf")
+    plt.close(fig)
+
+
 def render() -> Path:
     from analysis import SWEEP_WEEKS, add_calendar, eligible
 
@@ -168,6 +201,10 @@ def render() -> Path:
     hol = pd.read_csv(RES / "holidays_summary.csv", index_col=0)
     coh = pd.read_csv(RES / "discovered_coherent_dates.csv", index_col=0)
     sb = pd.read_csv(RES / "superbowl_residual.csv")
+    tT = pd.read_csv(RES / "g3t_vs_g3.csv")
+    tTp = pd.read_csv(RES / "g3tprev_vs_g3.csv")
+    stations = pd.read_csv(RES / "weather_stations.csv")
+    from weather import BA_STATION
     sh = pd.read_parquet(RES / "daily_shapes.parquet")
     sh["date"] = pd.to_datetime(sh["date"]).dt.date
     sh = eligible(add_calendar(sh))
@@ -180,6 +217,7 @@ def render() -> Path:
     fig_regime(sh, tR, tRp)
     fig_superbowl(sb)
     fig_examples(sh)
+    fig_temperature(sh, tT, tR, tTp, s['temperature']['t_heat_c'])
 
     first, last = pd.Timestamp(s["first_date"]), pd.Timestamp(s["last_date"])
     w = s["window_sensitivity"]
@@ -223,6 +261,24 @@ def render() -> Path:
     )
     tg_rank = next((i + 1 for i, (dt, r) in enumerate(coh.iterrows()) if isinstance(r["label"], str) and r["label"] == "Thanksgiving"), None)
 
+    tx = s["temperature"]
+    bc = tx["best_config"]
+    regime_rows = "\n".join([
+        f"G3 & none & {pc(tx['means']['G3_w8'], 2)} & -- & -- \\\\",
+        f"G3R & peak hour, same day (oracle) & {pc(tx['means']['G3R_w8'], 2)} & {pc(s['regime_oracle_vs_g3']['mean_gain_rel_pct'])} & {int((tR['ci_lo'] > 0).sum())} \\\\",
+        f"G3Rprev & peak hour, previous day & {pc(tx['means']['G3Rprev_w8'], 2)} & {pc(s['regime_prevday_vs_g3']['mean_gain_rel_pct'])} & {int((tRp['ci_lo'] > 0).sum())} \\\\",
+        f"G3T & temperature, 2 classes, same day & {pc(tx['means']['G3T_w8'], 2)} & {pc(tx['G3T_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T_vs_G3']['bas_ci_above_zero']} \\\\",
+        f"G3T3 & temperature, 3 classes, same day & {pc(tx['means']['G3T3_w8'], 2)} & {pc(tx['G3T3_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T3_vs_G3']['bas_ci_above_zero']} \\\\",
+        f"G3Tprev & temperature, 2 classes, previous day & {pc(tx['means']['G3Tprev_w8'], 2)} & {pc(tx['G3Tprev_vs_G3']['mean_gain_rel_pct'])} & {tx['G3Tprev_vs_G3']['bas_ci_above_zero']} \\\\",
+        f"G3T3prev & temperature, 3 classes, previous day & {pc(tx['means']['G3T3prev_w8'], 2)} & {pc(tx['G3T3prev_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T3prev_vs_G3']['bas_ci_above_zero']} \\\\",
+    ])
+    icao_name = dict(zip(stations["ICAO"], stations["STATION NAME"].str.title()))
+    st_items = [f"{ba} & {BA_STATION[ba]}" for ba in sorted(BA_STATION) if ba in set(summary["ba"])]
+    while len(st_items) % 3:
+        st_items.append(" & ")
+    third = len(st_items) // 3
+    station_rows = "\n".join(f"{st_items[i]} & {st_items[i + third]} & {st_items[i + 2 * third]} \\\\" for i in range(third))
+    del icao_name
     worst = tA.sort_values("gain_rel_pct").query("ci_hi < 0")["ba"].tolist()
     analog_worst = worst[0] if len(worst) == 1 else ", ".join(worst[:-1]) + " and " + worst[-1]
     two = s["two_cluster_bas"]
@@ -255,6 +311,14 @@ def render() -> Path:
         "tg_rank": str(tg_rank) if tg_rank else "beyond 25",
         "sb_sat_share": pc(s["sb_sat_share"] * 100, 0),
         "model_rows": model_rows, "season_rows": season_rows, "holiday_rows": holiday_rows, "date_rows": date_rows,
+        "regime_rows": regime_rows, "station_rows": station_rows,
+        "t_heat": f"{tx['t_heat_c']:.0f}", "t_cool": f"{tx['t_cool_c']:.0f}", "t_agree": pc(tx["regime_agreement_with_peak_hour"] * 100, 0),
+        "g3t_gain": pc(tx["G3T_vs_G3"]["mean_gain_rel_pct"]), "g3t_up": str(tx["G3T_vs_G3"]["bas_ci_above_zero"]),
+        "g3t3_gain": pc(tx["G3T3_vs_G3"]["mean_gain_rel_pct"]), "g3t3_need": str(tx["G3T3_vs_G3"]["bas_needing"]),
+        "g3tprev_gain": pc(tx["G3Tprev_vs_G3"]["mean_gain_rel_pct"]), "g3t3prev_gain": pc(tx["G3T3prev_vs_G3"]["mean_gain_rel_pct"]),
+        "cfg_mape": pc(bc["means"]["BEST"], 2), "best_base": pc(bc["means"]["G3_w2"], 2),
+        "best_gain": pc(bc["BEST_vs_G3_w2"]["mean_gain_rel_pct"]), "best_up": str(bc["BEST_vs_G3_w2"]["bas_ci_above_zero"]),
+        "bestprev_mape": pc(bc["means"]["BESTprev"], 2),
     }
     tpl = (PAPER / "paper.template.tex").read_text(encoding="utf-8")
     for k, v in fields.items():

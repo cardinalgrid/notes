@@ -45,6 +45,10 @@ MODELS = {
 }
 WINDOW_WEEKS = 8
 SEASONAL_COLS = ("G3_w2", "A1", "R2A1", "R2A2", "S4_w52")
+T_HEAT_C = 15.0   # daily mean temperature (C) below which a day is a heating day; best pooled threshold, see study notes
+T_COOL_C = 22.0   # daily mean temperature above which a day is a cooling day
+WEATHER_COLS = ("G3_w8", "G3R_w8", "G3Rprev_w8", "G3T_w8", "G3T3_w8", "G3Tprev_w8", "G3T3prev_w8")
+BEST_COLS = ("G3_w2", "R2A1", "G3T3_w2", "BEST", "BESTprev")
 SWEEP_WEEKS = (2, 3, 4, 6, 8, 12, 16)
 MIN_REF = 3
 MIN_DAYS_PER_BA = 600
@@ -104,6 +108,29 @@ def add_calendar(sh: pd.DataFrame) -> pd.DataFrame:
     prev = sh.groupby("ba")["regime"].shift(1)
     prev_ord = sh.groupby("ba")["ordinal"].shift(1)
     sh["regime_prev"] = np.where(prev_ord == sh["ordinal"] - 1, prev, np.nan)
+    wx = RES / "daily_weather.parquet"
+    if wx.exists():
+        w = pd.read_parquet(wx)
+        w["date"] = pd.to_datetime(w["date"]).dt.date
+        sh = sh.merge(w[["ba", "date", "tmean_c", "tmin_c", "tmax_c"]], on=["ba", "date"], how="left")
+    else:
+        sh["tmean_c"] = np.nan
+        sh["tmin_c"] = np.nan
+        sh["tmax_c"] = np.nan
+    sh = sh.sort_values(["ba", "ordinal"]).reset_index(drop=True)
+    # temperature regimes: 2 classes (heating / not) and 3 classes (heating / mild / cooling)
+    sh["tregime"] = np.where(sh["tmean_c"].isna(), np.nan, (sh["tmean_c"] < T_HEAT_C).astype(float))
+    sh["tregime3"] = np.where(sh["tmean_c"].isna(), np.nan,
+                              np.where(sh["tmean_c"] < T_HEAT_C, 0.0, np.where(sh["tmean_c"] > T_COOL_C, 2.0, 1.0)))
+    tprev = sh.groupby("ba")["tregime"].shift(1)
+    tprev_ord = sh.groupby("ba")["ordinal"].shift(1)
+    sh["tregime_prev"] = np.where(tprev_ord == sh["ordinal"] - 1, tprev, np.nan)
+    sh["G3T"] = np.where(sh["tregime"].isna(), np.nan, sh["G3"] * 2 + sh["tregime"])
+    sh["G3T3"] = np.where(sh["tregime3"].isna(), np.nan, sh["G3"] * 3 + sh["tregime3"])
+    sh["G3Tprev"] = np.where(sh["tregime_prev"].isna(), np.nan, sh["G3"] * 2 + sh["tregime_prev"])
+    t3prev = sh.groupby("ba")["tregime3"].shift(1)
+    sh["tregime3_prev"] = np.where(tprev_ord == sh["ordinal"] - 1, t3prev, np.nan)
+    sh["G3T3prev"] = np.where(sh["tregime3_prev"].isna(), np.nan, sh["G3"] * 3 + sh["tregime3_prev"])
     sh["G3R"] = sh["G3"] * 2 + sh["regime"]              # oracle: the day's own regime
     sh["G3Rprev"] = sh["G3"] * 2 + sh["regime_prev"].fillna(sh["regime"])  # causal: yesterday's regime
     return sh
@@ -169,14 +196,15 @@ def season_of(month: int) -> int:
 
 
 def analog_profiles(ba: pd.DataFrame, group_col: str = "G3", weeks_recent: int = 2, years: int = 1, half_days: int = 21,
-                    min_ref: int = 2) -> np.ndarray:
+                    min_ref: int = 2, ref_col: str | None = None) -> np.ndarray:
     """Median shape over the union of (a) same-group days in the previous `weeks_recent` weeks and (b) same-group
     days within +-`half_days` of the same calendar date in each of the previous `years` years. weeks_recent=0
     gives analogs only. Special days are never references."""
     H = [f"h{h:02d}" for h in range(1, 25)]
     shapes = ba[H].to_numpy()
     ords = ba["ordinal"].to_numpy()
-    groups = ba[group_col].to_numpy()
+    groups = ba[ref_col or group_col].to_numpy()
+    targets = ba[group_col].to_numpy()
     special = ba["is_special"].to_numpy()
     out = np.full_like(shapes, np.nan)
     for i in range(len(ba)):
@@ -186,7 +214,7 @@ def analog_profiles(ba: pd.DataFrame, group_col: str = "G3", weeks_recent: int =
         for y in range(1, years + 1):
             c = ords[i] - int(round(365.25 * y))
             m |= (ords >= c - half_days) & (ords <= c + half_days)
-        m &= (groups == groups[i]) & ~special
+        m &= (groups == targets[i]) & ~special
         if m.sum() >= min_ref:
             out[i] = np.median(shapes[m], axis=0)
     return out
@@ -220,6 +248,24 @@ def evaluate(sh: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
         for w in (3, 8):
             base = causal_profiles(g, "G3", w)
             errs[f"G3off_w{w}"] = mape(base + weekday_offsets(g, base, actual), actual)
+        if g["tmean_c"].notna().any():
+            for m, ref in (("G3T", "G3T"), ("G3T3", "G3T3"), ("G3Tprev", "G3T"), ("G3T3prev", "G3T3")):
+                prof = causal_profiles(g, m, WINDOW_WEEKS, ref_col=ref)
+                prof[g[m].isna().to_numpy()] = np.nan
+                errs[f"{m}_w8"] = mape(prof, actual)
+            # recommended configuration: day type x 3-class temperature regime, last 2 weeks + last year analogs
+            prof = causal_profiles(g, "G3T3", 2, min_ref=2)
+            prof[g["G3T3"].isna().to_numpy()] = np.nan
+            errs["G3T3_w2"] = mape(prof, actual)
+            for name, col, ref in (("BEST", "G3T3", "G3T3"), ("BESTprev", "G3T3prev", "G3T3")):
+                prof = analog_profiles(g, group_col=col, ref_col=ref, weeks_recent=2, years=1)
+                prof[g[col].isna().to_numpy()] = np.nan
+                errs[name] = mape(prof, actual)
+        else:
+            for m in ("G3T", "G3T3", "G3Tprev", "G3T3prev"):
+                errs[f"{m}_w8"] = np.full(len(g), np.nan)
+            for m in ("G3T3_w2", "BEST", "BESTprev"):
+                errs[m] = np.full(len(g), np.nan)
         for m, ref in (("G3R", "G3R"), ("G3Rprev", "G3R")):
             prof = causal_profiles(g, m, WINDOW_WEEKS, ref_col=ref)
             errs[f"{m}_w8"] = mape(prof, actual)
@@ -254,6 +300,14 @@ def evaluate(sh: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
         for c in SEASONAL_COLS:
             r[f"seas_{c}_mean"] = gs[c].mean()
         r["seasonal_days"] = len(gs)
+        gw = normal[normal["ba"] == ba].dropna(subset=list(WEATHER_COLS))
+        for c in WEATHER_COLS:
+            r[f"wx_{c}_mean"] = gw[c].mean()
+        r["weather_days"] = len(gw)
+        gb = normal[normal["ba"] == ba].dropna(subset=list(BEST_COLS))
+        for c in BEST_COLS:
+            r[f"best_{c}_mean"] = gb[c].mean()
+        r["best_days"] = len(gb)
         r["share_morning_peak"] = float(sh.loc[sh["ba"] == ba, "regime"].mean())
         r["regime_switches_per_year"] = float(sh.loc[sh["ba"] == ba, "regime"].diff().abs().sum() / max(len(g) / 365.25, 1))
         rows.append(r)
@@ -638,6 +692,22 @@ def write_readme(out: dict, hol_summary: pd.DataFrame, coh: pd.DataFrame, testsR
         "regime_prev_n": rp["bas_needing"],
         "holiday_rows": chr(10).join(rows),
         "sb_sat_share": f"{out['sb_sat_share']*100:.0f}",
+        "t_heat": f"{out['temperature']['t_heat_c']:.0f}",
+        "t_cool": f"{out['temperature']['t_cool_c']:.0f}",
+        "t_agree": f"{out['temperature']['regime_agreement_with_peak_hour']*100:.0f}",
+        "g3t_gain": f"{out['temperature']['G3T_vs_G3']['mean_gain_rel_pct']:.1f}",
+        "g3t_up": out["temperature"]["G3T_vs_G3"]["bas_ci_above_zero"],
+        "g3t3_gain": f"{out['temperature']['G3T3_vs_G3']['mean_gain_rel_pct']:.1f}",
+        "g3t3_need": out["temperature"]["G3T3_vs_G3"]["bas_needing"],
+        "g3tprev_gain": f"{out['temperature']['G3Tprev_vs_G3']['mean_gain_rel_pct']:.1f}",
+        "g3t3prev_gain": f"{out['temperature']['G3T3prev_vs_G3']['mean_gain_rel_pct']:.1f}",
+        "g3t_top": ", ".join(f"{r['ba']} ({r['gain_rel_pct']:.0f}%)" for r in out["temperature"]["G3T_vs_G3"]["top"][:5]),
+        "cfg_mape": f"{out['temperature']['best_config']['means']['BEST']:.2f}",
+        "best_base": f"{out['temperature']['best_config']['means']['G3_w2']:.2f}",
+        "best_gain": f"{out['temperature']['best_config']['BEST_vs_G3_w2']['mean_gain_rel_pct']:.1f}",
+        "best_up": out["temperature"]["best_config"]["BEST_vs_G3_w2"]["bas_ci_above_zero"],
+        "bestprev_gain": f"{out['temperature']['best_config']['BESTprev_vs_G3_w2']['mean_gain_rel_pct']:.1f}",
+        "bestprev_mape": f"{out['temperature']['best_config']['means']['BESTprev']:.2f}",
     }
     text = tpl
     for k, v in vals.items():
@@ -663,6 +733,40 @@ def fig_analogs(testsA: pd.DataFrame, gain_month: dict) -> None:
     ax.tick_params(axis="y", labelsize=5)
     fig.tight_layout()
     fig.savefig(FIG / "fig10_analogs.png", dpi=150)
+    plt.close(fig)
+
+
+def fig_temperature(sh: pd.DataFrame, testsT: pd.DataFrame, testsR: pd.DataFrame, testsTp: pd.DataFrame) -> None:
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.4), gridspec_kw={"width_ratios": [1, 1.1]})
+    ax = axes[0]
+    d = sh.dropna(subset=["tmean_c"])
+    bins = np.arange(-15, 36, 2.5)
+    for ba, color in (("FPC", RED), ("SOCO", ORANGE), ("PJM", NAVY), ("ERCO", TEAL), ("CISO", GRAY)):
+        g = d[d["ba"] == ba]
+        cut = pd.cut(g["tmean_c"], bins)
+        m = g.groupby(cut, observed=True)["regime"].agg(["mean", "size"])
+        m = m[m["size"] >= 15]
+        ax.plot([iv.mid for iv in m.index], m["mean"] * 100, marker="o", color=color, label=ba)
+    ax.axvline(T_HEAT_C, color=RED, ls="--", lw=0.8)
+    style(ax, "Morning-peak days against daily mean temperature", "% of days with a morning peak")
+    ax.set_xlabel("daily mean temperature at the reference station, C")
+    ax.legend(fontsize=8)
+    ax = axes[1]
+    t = testsT.set_index("ba")["gain_rel_pct"].sort_values()
+    r = testsR.set_index("ba")["gain_rel_pct"].reindex(t.index)
+    p = testsTp.set_index("ba")["gain_rel_pct"].reindex(t.index)
+    y = np.arange(len(t))
+    ax.barh(y + 0.27, t.to_numpy(), height=0.27, color=RED, label="temperature, same day")
+    ax.barh(y, r.to_numpy(), height=0.27, color=GRAY, label="peak hour, same day (load-derived)")
+    ax.barh(y - 0.27, p.to_numpy(), height=0.27, color=NAVY, label="temperature, previous day")
+    ax.set_yticks(y)
+    ax.set_yticklabels(t.index, fontsize=5)
+    ax.axvline(0, color=GRAY, lw=0.8)
+    style(ax, "Gain of a heating-day split over G3")
+    ax.set_xlabel("relative reduction of shape MAPE, %")
+    ax.legend(fontsize=7, loc="lower right")
+    fig.tight_layout()
+    fig.savefig(FIG / "fig11_temperature.png", dpi=150)
     plt.close(fig)
 
 
@@ -718,6 +822,21 @@ def main() -> int:
     testsS = paired_tests(daily, "G3_w2", "S4_w52")
     nrm = daily[daily["special"] == ""].dropna(subset=["G3_w2", "R2A1"])
     gain_month = (nrm["G3_w2"] - nrm["R2A1"]).groupby(nrm["month"]).mean().round(3).to_dict()
+    testsT = paired_tests(daily, "G3_w8", "G3T_w8")
+    testsT.to_csv(RES / "g3t_vs_g3.csv", index=False)
+    testsT3 = paired_tests(daily, "G3_w8", "G3T3_w8")
+    testsT3.to_csv(RES / "g3t3_vs_g3.csv", index=False)
+    testsTp = paired_tests(daily, "G3_w8", "G3Tprev_w8")
+    testsTp.to_csv(RES / "g3tprev_vs_g3.csv", index=False)
+    testsTR = paired_tests(daily, "G3R_w8", "G3T_w8")
+    testsT3p = paired_tests(daily, "G3_w8", "G3T3prev_w8")
+    testsB = paired_tests(daily, "G3_w2", "BEST")
+    testsB.to_csv(RES / "best_vs_g3_w2.csv", index=False)
+    testsBp = paired_tests(daily, "G3_w2", "BESTprev")
+    testsBA = paired_tests(daily, "R2A1", "BEST")
+    testsTR.to_csv(RES / "g3t_vs_g3r.csv", index=False)
+    agree = sh.dropna(subset=["tregime"])
+    regime_agreement = float((agree["tregime"] == agree["regime"]).mean())
     testsR = paired_tests(daily, "G3_w8", "G3R_w8")
     testsR.to_csv(RES / "g3r_vs_g3.csv", index=False)
     testsRp = paired_tests(daily, "G3_w8", "G3Rprev_w8")
@@ -744,6 +863,7 @@ def main() -> int:
     fig_window_sweep(summary)
     fig_regime(sh, testsR, testsRp)
     fig_analogs(testsA, gain_month)
+    fig_temperature(sh, testsT, testsR, testsTp)
 
     by_wd = {WEEKDAYS[w]: float(tests[f"gain_{WEEKDAYS[w]}"].mean()) for w in range(7)}
     out = {
@@ -784,6 +904,30 @@ def main() -> int:
             "vs_G3_w8": {"mean_gain_rel_pct": float(testsO8["gain_rel_pct"].mean()), "bas_needing": int(testsO8["needs_b"].sum()),
                          "bas_ci_above_zero": int((testsO8["ci_lo"] > 0).sum())},
             "vs_G7_w3": {"mean_gain_rel_pct": float(testsO7["gain_rel_pct"].mean()), "bas_ci_above_zero": int((testsO7["ci_lo"] > 0).sum())},
+        },
+        "temperature": {
+            "t_heat_c": T_HEAT_C, "t_cool_c": T_COOL_C,
+            "regime_agreement_with_peak_hour": regime_agreement,
+            "means": {c: float(summary[f"wx_{c}_mean"].mean()) for c in WEATHER_COLS},
+            "G3T_vs_G3": {"mean_gain_rel_pct": float(testsT["gain_rel_pct"].mean()), "bas_needing": int(testsT["needs_b"].sum()),
+                          "bas_ci_above_zero": int((testsT["ci_lo"] > 0).sum()), "bas_ci_below_zero": int((testsT["ci_hi"] < 0).sum()),
+                          "top": testsT[["ba", "gain_rel_pct"]].head(10).round(1).to_dict(orient="records")},
+            "G3T3_vs_G3": {"mean_gain_rel_pct": float(testsT3["gain_rel_pct"].mean()), "bas_needing": int(testsT3["needs_b"].sum()),
+                           "bas_ci_above_zero": int((testsT3["ci_lo"] > 0).sum())},
+            "G3Tprev_vs_G3": {"mean_gain_rel_pct": float(testsTp["gain_rel_pct"].mean()), "bas_needing": int(testsTp["needs_b"].sum()),
+                              "bas_ci_above_zero": int((testsTp["ci_lo"] > 0).sum())},
+            "G3T3prev_vs_G3": {"mean_gain_rel_pct": float(testsT3p["gain_rel_pct"].mean()), "bas_needing": int(testsT3p["needs_b"].sum()),
+                               "bas_ci_above_zero": int((testsT3p["ci_lo"] > 0).sum())},
+            "best_config": {
+                "means": {c: float(summary[f"best_{c}_mean"].mean()) for c in BEST_COLS},
+                "BEST_vs_G3_w2": {"mean_gain_rel_pct": float(testsB["gain_rel_pct"].mean()), "bas_needing": int(testsB["needs_b"].sum()),
+                                  "bas_ci_above_zero": int((testsB["ci_lo"] > 0).sum())},
+                "BESTprev_vs_G3_w2": {"mean_gain_rel_pct": float(testsBp["gain_rel_pct"].mean()), "bas_needing": int(testsBp["needs_b"].sum()),
+                                      "bas_ci_above_zero": int((testsBp["ci_lo"] > 0).sum())},
+                "BEST_vs_R2A1": {"mean_gain_rel_pct": float(testsBA["gain_rel_pct"].mean()), "bas_ci_above_zero": int((testsBA["ci_lo"] > 0).sum())},
+            },
+            "G3T_vs_G3R": {"mean_gain_rel_pct": float(testsTR["gain_rel_pct"].mean()),
+                           "bas_ci_above_zero": int((testsTR["ci_lo"] > 0).sum()), "bas_ci_below_zero": int((testsTR["ci_hi"] < 0).sum())},
         },
         "regime_oracle_vs_g3": {"mean_gain_rel_pct": float(testsR["gain_rel_pct"].mean()), "bas_needing": int(testsR["needs_b"].sum()),
                                 "top": testsR[["ba", "gain_rel_pct"]].head(10).round(1).to_dict(orient="records")},

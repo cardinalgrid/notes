@@ -25,7 +25,7 @@ Which choice is right is an empirical question, and with EIA-930 it can be answe
 | G7 | one per weekday |
 
 - Special days (a priori): U.S. federal holidays and their observed days, the day after Thanksgiving, 24 and 31 December, and Super Bowl Sunday. {special_share}% of BA-days.
-- A **heating/cooling regime**: a day is a *morning-peak* day if its highest hour is 12:00 or earlier, which in practice means an electric-heating morning; otherwise it is an afternoon/evening-peak day.
+- A **heating/cooling regime**, read two ways. From the load: a day is a *morning-peak* day if its highest hour is 12:00 or earlier, which in practice means an electric-heating morning. From the weather: the daily mean temperature at one NOAA airport station per BA (hourly ISD-Lite observations, [`weather.py`](weather.py)) classifies a day as heating (below {t_heat} °C), mild, or cooling (above {t_cool} °C). The {t_heat} °C threshold is the one that best separates morning-peak days from the rest, and it is nearly the same in every BA.
 
 ## Findings
 
@@ -61,7 +61,11 @@ G3 beats G1 in every BA, by {g3_over_g1}% on average; in {n_need3} BAs the gain 
 
 The days on which the most BAs departed from their own profile at the same time are not holidays. They are the first cold morning of the autumn and the first hot afternoon of the spring: {coherent_examples}. On those days the peak moves from the evening to 07:00, or the other way round, across a whole region.
 
-Treated as a day type, this regime is worth more than any weekday distinction. Splitting G3 by the day's own regime (which requires knowing the weather) cuts the shape error by {regime_oracle}% on average, and by more than 5% in {regime_oracle_n} BAs, up to {regime_top_gain}% in {regime_top_ba}. Using only yesterday's regime, which needs no forecast at all, still gives {regime_prev}% on average and more than 5% in {regime_prev_n} BAs. The effect is concentrated in the Southeast and the Northwest, where electric heating produces a morning peak in winter, and absent in California, New York and New England.
+Treated as a day type, this regime is worth more than any weekday distinction. Read from the load itself, splitting G3 by the day's own morning-peak regime cuts the shape error by {regime_oracle}% on average, up to {regime_top_gain}% in {regime_top_ba}; yesterday's regime still gives {regime_prev}%. The effect is concentrated in the Southeast and the Northwest, where electric heating produces a morning peak in winter, and absent in California, New York and New England.
+
+Read from the weather, the result is stronger and it no longer needs the day's own load. Temperature and the morning-peak flag agree on {t_agree}% of days. A two-class split at {t_heat} °C of daily mean temperature cuts the error by {g3t_gain}%, with the confidence interval above zero in **all {g3t_up} BAs** (largest gains: {g3t_top}). A three-class split, heating below {t_heat} °C, cooling above {t_cool} °C, mild in between, cuts it by **{g3t3_gain}%**, more than 5% in {g3t3_need} BAs, and beats the load-derived oracle. And **yesterday's temperature is as good as today's**: {g3tprev_gain}% with two classes, {g3t3prev_gain}% with three. Weather changes slowly enough that a day-old thermometer reading is a usable day type, with no forecast at all.
+
+![Temperature](figures/fig11_temperature.png)
 
 ![Regime](figures/fig9_regime.png)
 
@@ -83,13 +87,17 @@ Super Bowl Sunday has a signature of its own: demand falls by 3 to 4% of the dai
 
 ![Super Bowl](figures/fig6_superbowl.png)
 
+### 6. Putting it together
+
+The recommended configuration follows from the findings: three day types, crossed with the three-class temperature regime, with a reference set of the last two weeks plus the same three weeks of the previous year. On the days where all models can be compared, its shape error is **{cfg_mape}%** against {best_base}% for the plain three-type, two-week model, a {best_gain}% reduction with the interval above zero in {best_up} of {n_bas} BAs. With yesterday's temperature instead of today's it is {bestprev_mape}% ({bestprev_gain}%). That is the profile the anomaly detector of this initiative will use.
+
 ## What to do with this
 
 For anomaly detection, gap repair and calendar features on U.S. BA load, the evidence supports:
 
 1. **Three day types, not seven**, with a reference set of the last two weeks plus the same three weeks of the previous year. A stable per-weekday adjustment adds nothing measurable; fixed seasonal classes make things worse.
 2. A **special-day list of seven entries** (New Year's Day, Memorial Day, Independence Day, Labor Day, Thanksgiving and the day after, Christmas Eve and Christmas Day, New Year's Eve) plus Super Bowl Sunday, each mapped to the Saturday or Sunday profile as in the table above, and nothing for the four minor federal holidays.
-3. A **heating/cooling regime** as a day type wherever the BA has a winter morning peak, driven by a temperature forecast when one is available and by yesterday's regime when it is not.
+3. A **three-class temperature regime** as a day type (heating below {t_heat} °C, cooling above {t_cool} °C of daily mean temperature), from a forecast when one is available and from yesterday's observation when it is not; it is worth more than every calendar distinction combined.
 
 ## What this does not show
 
@@ -97,7 +105,8 @@ For anomaly detection, gap repair and calendar features on U.S. BA load, the evi
 - The window of 8 weeks used for the model comparison is not the best window; the sweep shows that. The ranking of models does not change with the window.
 - BAs spanning several time zones (MISO, SWPP, WACM) report in one; their profiles are a blend.
 - EIA-imputed hours are used as reported.
-- No weather data was used. The regime is read from the load itself, which is why the "oracle" split is an upper bound and the previous-day split a floor for what a temperature forecast would give.
+- One airport station per BA. For systems spanning several climates (MISO, SWPP, PJM) the station is a proxy for the load centre, and the temperature gains reported for them are, if anything, understated.
+- Temperature thresholds are national. A per-BA threshold would fit better and generalise worse; the sensitivity to the threshold is small because the best value is nearly the same everywhere.
 
 ## Reproduce
 
