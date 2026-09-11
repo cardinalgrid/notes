@@ -82,6 +82,7 @@ Fig.~\ref{fig:models} shows the mean shape error of the five grouping calendars 
 \caption{Mean daily shape MAPE over BAs, normal days, <<first_month>> to <<last_month>>.}
 \label{tab:models}
 \centering
+\scriptsize
 \begin{tabular}{llr}
 \toprule
 Model & Reference set (day type $\times$ history) & MAPE \\
@@ -114,10 +115,10 @@ The season enters usefully as an analog rather than as a class (Table~\ref{tab:s
 \caption{Season as a class versus as an analog. Mean daily shape MAPE over BAs on the days where all five models exist; relative gain over the two-week G3 model with the number of BAs whose 95\% interval lies above (or below) zero.}
 \label{tab:season}
 \centering
-\small
+\scriptsize
 \begin{tabular}{llrr}
 \toprule
-Model & Reference set & MAPE & Gain vs.\ R2 \\
+Model & Reference set & MAPE & Gain (BAs $+$/$-$) \\
 \midrule
 <<season_rows>>
 \bottomrule
@@ -141,7 +142,7 @@ Fig.~\ref{fig:temperature} shows the share of morning-peak days against daily me
 \caption{Regime models: mean daily shape MAPE over BAs on the days where all models exist (8-week window), relative gain over G3, and number of BAs with the 95\% interval above zero.}
 \label{tab:regime}
 \centering
-\small
+\scriptsize
 \begin{tabular}{llrrr}
 \toprule
 Model & Regime & MAPE & Gain & BAs \\
@@ -176,7 +177,7 @@ BA & Station & BA & Station & BA & Station \\
 \caption{Dates with the largest median shape error across BAs (G3, 8 weeks), among dates on which at least 80\% of BAs report.}
 \label{tab:dates}
 \centering
-\small
+\scriptsize
 \begin{tabular}{llrr}
 \toprule
 Date & Weekday & Median MAPE & Special day \\
@@ -193,7 +194,7 @@ Table~\ref{tab:holidays} gives, for each special day, the median error against t
 \caption{Special days: median shape MAPE against the profile of the day's own weekday, of Saturday and of Sunday (8-week window), and the profile most often closest, with its share of BA-years.}
 \label{tab:holidays}
 \centering
-\small
+\scriptsize
 \begin{tabular}{lrrrrl}
 \toprule
 Day & $n$ & Own & Sat. & Sun. & Closest \\

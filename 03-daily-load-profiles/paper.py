@@ -231,12 +231,12 @@ def render() -> Path:
     model_rows = "\n".join(f"{m} & {desc[m]} & {pc(s['model_mean_mape'][m], 2)} \\\\" for m in MODELS)
 
     season_rows = "\n".join([
-        f"R2 & workday / Sat. / Sun., previous 2 weeks & {pc(se['means']['G3_w2'], 2)} & -- \\\\",
-        f"S4 & season $\\times$ day type, previous 52 weeks & {pc(se['means']['S4_w52'], 2)} & "
+        f"R2 & workday/Sat./Sun., prev.\\ 2 wk & {pc(se['means']['G3_w2'], 2)} & -- \\\\",
+        f"S4 & season $\\times$ day type, prev.\\ 52 wk & {pc(se['means']['S4_w52'], 2)} & "
         f"${se['S4_vs_G3_w2']['mean_gain_rel_pct']:+.1f}$\\% ({s['bas_eligible'] - se['S4_vs_G3_w2']['bas_ci_below_zero']}/{se['S4_vs_G3_w2']['bas_ci_below_zero']}) \\\\",
-        f"A1 & analogs, $\\pm 21$ days, one year earlier & {pc(se['means']['A1'], 2)} & -- \\\\",
-        f"R2+A1 & union of R2 and A1 & {pc(se['means']['R2A1'], 2)} & ${se['R2A1_vs_G3_w2']['mean_gain_rel_pct']:+.1f}$\\% ({se['R2A1_vs_G3_w2']['bas_ci_above_zero']}/{se['R2A1_vs_G3_w2']['bas_ci_below_zero']}) \\\\",
-        f"R2+A2 & union of R2 and two years of analogs & {pc(se['means']['R2A2'], 2)} & ${se['R2A2_vs_G3_w2']['mean_gain_rel_pct']:+.1f}$\\% \\\\",
+        f"A1 & analogs $\\pm 21$ d, prev.\\ year & {pc(se['means']['A1'], 2)} & -- \\\\",
+        f"R2+A1 & R2 $\\cup$ A1 & {pc(se['means']['R2A1'], 2)} & ${se['R2A1_vs_G3_w2']['mean_gain_rel_pct']:+.1f}$\\% ({se['R2A1_vs_G3_w2']['bas_ci_above_zero']}/{se['R2A1_vs_G3_w2']['bas_ci_below_zero']}) \\\\",
+        f"R2+A2 & R2 $\\cup$ two years of analogs & {pc(se['means']['R2A2'], 2)} & ${se['R2A2_vs_G3_w2']['mean_gain_rel_pct']:+.1f}$\\% \\\\",
     ])
 
     order = ["Thanksgiving", "Christmas Day", "Christmas Eve", "New Year's Eve", "Day after Thanksgiving", "New Year's Day",
@@ -247,7 +247,7 @@ def render() -> Path:
         if k not in hol.index:
             continue
         r = hol.loc[k]
-        shares = {"Sunday": r["share_sun"], "Saturday": r["share_sat"], "own": r["share_own"]}
+        shares = {"Sun.": r["share_sun"], "Sat.": r["share_sat"], "own": r["share_own"]}
         best = max(shares, key=shares.get)
         own = "--" if k == "Super Bowl Sunday" else pc(r["err_own"])
         hrows.append(f"{tex(k)} & {int(r['n'])} & {own} & {pc(r['err_sat'])} & {pc(r['err_sun'])} & {best} ({shares[best]*100:.0f}\\%) \\\\")
@@ -265,12 +265,12 @@ def render() -> Path:
     bc = tx["best_config"]
     regime_rows = "\n".join([
         f"G3 & none & {pc(tx['means']['G3_w8'], 2)} & -- & -- \\\\",
-        f"G3R & peak hour, same day (oracle) & {pc(tx['means']['G3R_w8'], 2)} & {pc(s['regime_oracle_vs_g3']['mean_gain_rel_pct'])} & {int((tR['ci_lo'] > 0).sum())} \\\\",
+        f"G3R & peak hour, same day & {pc(tx['means']['G3R_w8'], 2)} & {pc(s['regime_oracle_vs_g3']['mean_gain_rel_pct'])} & {int((tR['ci_lo'] > 0).sum())} \\\\",
         f"G3Rprev & peak hour, previous day & {pc(tx['means']['G3Rprev_w8'], 2)} & {pc(s['regime_prevday_vs_g3']['mean_gain_rel_pct'])} & {int((tRp['ci_lo'] > 0).sum())} \\\\",
-        f"G3T & temperature, 2 classes, same day & {pc(tx['means']['G3T_w8'], 2)} & {pc(tx['G3T_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T_vs_G3']['bas_ci_above_zero']} \\\\",
-        f"G3T3 & temperature, 3 classes, same day & {pc(tx['means']['G3T3_w8'], 2)} & {pc(tx['G3T3_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T3_vs_G3']['bas_ci_above_zero']} \\\\",
-        f"G3Tprev & temperature, 2 classes, previous day & {pc(tx['means']['G3Tprev_w8'], 2)} & {pc(tx['G3Tprev_vs_G3']['mean_gain_rel_pct'])} & {tx['G3Tprev_vs_G3']['bas_ci_above_zero']} \\\\",
-        f"G3T3prev & temperature, 3 classes, previous day & {pc(tx['means']['G3T3prev_w8'], 2)} & {pc(tx['G3T3prev_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T3prev_vs_G3']['bas_ci_above_zero']} \\\\",
+        f"G3T & temp., 2 classes, same day & {pc(tx['means']['G3T_w8'], 2)} & {pc(tx['G3T_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T_vs_G3']['bas_ci_above_zero']} \\\\",
+        f"G3T3 & temp., 3 classes, same day & {pc(tx['means']['G3T3_w8'], 2)} & {pc(tx['G3T3_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T3_vs_G3']['bas_ci_above_zero']} \\\\",
+        f"G3Tprev & temp., 2 classes, prev.\\ day & {pc(tx['means']['G3Tprev_w8'], 2)} & {pc(tx['G3Tprev_vs_G3']['mean_gain_rel_pct'])} & {tx['G3Tprev_vs_G3']['bas_ci_above_zero']} \\\\",
+        f"G3T3prev & temp., 3 classes, prev.\\ day & {pc(tx['means']['G3T3prev_w8'], 2)} & {pc(tx['G3T3prev_vs_G3']['mean_gain_rel_pct'])} & {tx['G3T3prev_vs_G3']['bas_ci_above_zero']} \\\\",
     ])
     icao_name = dict(zip(stations["ICAO"], stations["STATION NAME"].str.title()))
     st_items = [f"{ba} & {BA_STATION[ba]}" for ba in sorted(BA_STATION) if ba in set(summary["ba"])]
