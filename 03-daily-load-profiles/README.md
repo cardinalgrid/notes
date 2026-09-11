@@ -25,7 +25,7 @@ Which choice is right is an empirical question, and with EIA-930 it can be answe
 | G7 | one per weekday |
 
 - Special days (a priori): U.S. federal holidays and their observed days, the day after Thanksgiving, 24 and 31 December, and Super Bowl Sunday. 4.3% of BA-days.
-- A **heating/cooling regime**, read two ways. From the load: a day is a *morning-peak* day if its highest hour is 12:00 or earlier, which in practice means an electric-heating morning. From the weather: the daily mean temperature at one NOAA airport station per BA (hourly ISD-Lite observations, [`weather.py`](weather.py)) classifies a day as heating (below 59 °F (15 °C)), mild, or cooling (above 72 °F (22 °C)). The 59 °F threshold is the one that best separates morning-peak days from the rest, and it is nearly the same in every BA.
+- A **heating/cooling regime**, read two ways. From the load: a day is a *morning-peak* day if its highest hour is 12:00 or earlier, which in practice means an electric-heating morning. From the weather: the daily mean temperature at one NOAA airport station per BA (hourly ISD-Lite observations, [`weather.py`](weather.py)) classifies a day as heating (below 59 °F (15 °C)), mild, or cooling (above 72 °F (22 °C)). The 59 °F threshold is the one that best separates morning-peak days from the rest, and it is nearly the same in every BA. It is not the 65 °F balance point of degree-day practice, which marks where the *amount* of electricity stops responding to temperature; this one marks where the *shape* of the day flips, which needs more cold.
 
 ## Findings
 
