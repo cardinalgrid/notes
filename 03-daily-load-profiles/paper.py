@@ -134,7 +134,7 @@ def fig_superbowl(sb: pd.DataFrame) -> None:
 
 
 def fig_examples(sh: pd.DataFrame) -> None:
-    fig, axes = plt.subplots(1, 3, figsize=(COL, 1.9), sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(COL, 2.2), sharey=True)
     cmap = plt.get_cmap("viridis", 7)
     normal = sh[~sh["is_special"]]
     for ax, ba in zip(axes, ("PJM", "ERCO", "CISO")):
@@ -148,7 +148,10 @@ def fig_examples(sh: pd.DataFrame) -> None:
         ax.set_xticks([6, 12, 18, 24])
         ax.tick_params(labelsize=6)
     axes[0].set_ylabel("demand / daily mean", fontsize=7)
-    axes[2].legend(fontsize=4, ncol=2, loc="lower right", handlelength=1)
+    handles, labels = axes[2].get_legend_handles_labels()
+    fig.legend(handles, labels, ncol=8, fontsize=5, loc="lower center", bbox_to_anchor=(0.5, -0.02), handlelength=1.2,
+               columnspacing=0.8, frameon=False)
+    fig.subplots_adjust(bottom=0.3)
     fig.savefig(FIG / "fig6_examples.pdf")
     plt.close(fig)
 
