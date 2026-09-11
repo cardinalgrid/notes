@@ -25,7 +25,7 @@ Which choice is right is an empirical question, and with EIA-930 it can be answe
 | G7 | one per weekday |
 
 - Special days (a priori): U.S. federal holidays and their observed days, the day after Thanksgiving, 24 and 31 December, and Super Bowl Sunday. {special_share}% of BA-days.
-- A **heating/cooling regime**, read two ways. From the load: a day is a *morning-peak* day if its highest hour is 12:00 or earlier, which in practice means an electric-heating morning. From the weather: the daily mean temperature at one NOAA airport station per BA (hourly ISD-Lite observations, [`weather.py`](weather.py)) classifies a day as heating (below {t_heat} °C), mild, or cooling (above {t_cool} °C). The {t_heat} °C threshold is the one that best separates morning-peak days from the rest, and it is nearly the same in every BA.
+- A **heating/cooling regime**, read two ways. From the load: a day is a *morning-peak* day if its highest hour is 12:00 or earlier, which in practice means an electric-heating morning. From the weather: the daily mean temperature at one NOAA airport station per BA (hourly ISD-Lite observations, [`weather.py`](weather.py)) classifies a day as heating (below {t_heat}), mild, or cooling (above {t_cool}). The {t_heat_short} threshold is the one that best separates morning-peak days from the rest, and it is nearly the same in every BA.
 
 ## Findings
 
@@ -63,7 +63,7 @@ The days on which the most BAs departed from their own profile at the same time 
 
 Treated as a day type, this regime is worth more than any weekday distinction. Read from the load itself, splitting G3 by the day's own morning-peak regime cuts the shape error by {regime_oracle}% on average, up to {regime_top_gain}% in {regime_top_ba}; yesterday's regime still gives {regime_prev}%. The effect is concentrated in the Southeast and the Northwest, where electric heating produces a morning peak in winter, and absent in California, New York and New England.
 
-Read from the weather, the result is stronger and it no longer needs the day's own load. Temperature and the morning-peak flag agree on {t_agree}% of days. A two-class split at {t_heat} °C of daily mean temperature cuts the error by {g3t_gain}%, with the confidence interval above zero in **all {g3t_up} BAs** (largest gains: {g3t_top}). A three-class split, heating below {t_heat} °C, cooling above {t_cool} °C, mild in between, cuts it by **{g3t3_gain}%**, more than 5% in {g3t3_need} BAs, and beats the load-derived oracle. And **yesterday's temperature is as good as today's**: {g3tprev_gain}% with two classes, {g3t3prev_gain}% with three. Weather changes slowly enough that a day-old thermometer reading is a usable day type, with no forecast at all.
+Read from the weather, the result is stronger and it no longer needs the day's own load. Temperature and the morning-peak flag agree on {t_agree}% of days. A two-class split at {t_heat} of daily mean temperature cuts the error by {g3t_gain}%, with the confidence interval above zero in **all {g3t_up} BAs** (largest gains: {g3t_top}). A three-class split, heating below {t_heat_short}, cooling above {t_cool_short}, mild in between, cuts it by **{g3t3_gain}%**, more than 5% in {g3t3_need} BAs, and beats the load-derived oracle. And **yesterday's temperature is as good as today's**: {g3tprev_gain}% with two classes, {g3t3prev_gain}% with three. Weather changes slowly enough that a day-old thermometer reading is a usable day type, with no forecast at all.
 
 ![Temperature](figures/fig11_temperature.png)
 
@@ -97,7 +97,7 @@ For anomaly detection, gap repair and calendar features on U.S. BA load, the evi
 
 1. **Three day types, not seven**, with a reference set of the last two weeks plus the same three weeks of the previous year. A stable per-weekday adjustment adds nothing measurable; fixed seasonal classes make things worse.
 2. A **special-day list of seven entries** (New Year's Day, Memorial Day, Independence Day, Labor Day, Thanksgiving and the day after, Christmas Eve and Christmas Day, New Year's Eve) plus Super Bowl Sunday, each mapped to the Saturday or Sunday profile as in the table above, and nothing for the four minor federal holidays.
-3. A **three-class temperature regime** as a day type (heating below {t_heat} °C, cooling above {t_cool} °C of daily mean temperature), from a forecast when one is available and from yesterday's observation when it is not; it is worth more than every calendar distinction combined.
+3. A **three-class temperature regime** as a day type (heating below {t_heat}, cooling above {t_cool} of daily mean temperature), from a forecast when one is available and from yesterday's observation when it is not; it is worth more than every calendar distinction combined.
 
 ## What this does not show
 

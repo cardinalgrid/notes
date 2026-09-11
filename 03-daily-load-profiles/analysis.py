@@ -46,8 +46,10 @@ MODELS = {
 }
 WINDOW_WEEKS = 8
 SEASONAL_COLS = ("G3_w2", "A1", "R2A1", "R2A2", "S4_w52")
-T_HEAT_C = 15.0   # daily mean temperature (C) below which a day is a heating day; best pooled threshold, see study notes
-T_COOL_C = 22.0   # daily mean temperature above which a day is a cooling day
+T_HEAT_F = 59.0   # daily mean temperature (F) below which a day is a heating day; best pooled threshold, see study notes
+T_COOL_F = 72.0   # daily mean temperature (F) above which a day is a cooling day
+T_HEAT_C = (T_HEAT_F - 32.0) * 5.0 / 9.0
+T_COOL_C = (T_COOL_F - 32.0) * 5.0 / 9.0
 WEATHER_COLS = ("G3_w8", "G3R_w8", "G3Rprev_w8", "G3T_w8", "G3T3_w8", "G3Tprev_w8", "G3T3prev_w8")
 BEST_COLS = ("G3_w2", "R2A1", "G3T3_w2", "BEST", "BESTprev")
 SWEEP_WEEKS = (2, 3, 4, 6, 8, 12, 16)
@@ -693,8 +695,10 @@ def write_readme(out: dict, hol_summary: pd.DataFrame, coh: pd.DataFrame, testsR
         "regime_prev_n": rp["bas_needing"],
         "holiday_rows": chr(10).join(rows),
         "sb_sat_share": f"{out['sb_sat_share']*100:.0f}",
-        "t_heat": f"{out['temperature']['t_heat_c']:.0f}",
-        "t_cool": f"{out['temperature']['t_cool_c']:.0f}",
+        "t_heat": f"{out['temperature']['t_heat_f']:.0f} °F ({out['temperature']['t_heat_c']:.0f} °C)",
+        "t_cool": f"{out['temperature']['t_cool_f']:.0f} °F ({out['temperature']['t_cool_c']:.0f} °C)",
+        "t_heat_short": f"{out['temperature']['t_heat_f']:.0f} °F",
+        "t_cool_short": f"{out['temperature']['t_cool_f']:.0f} °F",
         "t_agree": f"{out['temperature']['regime_agreement_with_peak_hour']*100:.0f}",
         "g3t_gain": f"{out['temperature']['G3T_vs_G3']['mean_gain_rel_pct']:.1f}",
         "g3t_up": out["temperature"]["G3T_vs_G3"]["bas_ci_above_zero"],
@@ -740,17 +744,18 @@ def fig_analogs(testsA: pd.DataFrame, gain_month: dict) -> None:
 def fig_temperature(sh: pd.DataFrame, testsT: pd.DataFrame, testsR: pd.DataFrame, testsTp: pd.DataFrame) -> None:
     fig, axes = plt.subplots(1, 2, figsize=(10, 4.4), gridspec_kw={"width_ratios": [1, 1.1]})
     ax = axes[0]
-    d = sh.dropna(subset=["tmean_c"])
-    bins = np.arange(-15, 36, 2.5)
+    d = sh.dropna(subset=["tmean_c"]).copy()
+    d["tmean_f"] = d["tmean_c"] * 9.0 / 5.0 + 32.0
+    bins = np.arange(0, 100, 5)
     for ba, color in (("FPC", RED), ("SOCO", ORANGE), ("PJM", NAVY), ("ERCO", TEAL), ("CISO", GRAY)):
         g = d[d["ba"] == ba]
-        cut = pd.cut(g["tmean_c"], bins)
+        cut = pd.cut(g["tmean_f"], bins)
         m = g.groupby(cut, observed=True)["regime"].agg(["mean", "size"])
         m = m[m["size"] >= 15]
         ax.plot([iv.mid for iv in m.index], m["mean"] * 100, marker="o", color=color, label=ba)
-    ax.axvline(T_HEAT_C, color=RED, ls="--", lw=0.8)
+    ax.axvline(T_HEAT_F, color=RED, ls="--", lw=0.8)
     style(ax, "Morning-peak days against daily mean temperature", "% of days with a morning peak")
-    ax.set_xlabel("daily mean temperature at the reference station, C")
+    ax.set_xlabel("daily mean temperature at the reference station, °F")
     ax.legend(fontsize=8)
     ax = axes[1]
     t = testsT.set_index("ba")["gain_rel_pct"].sort_values()
@@ -907,7 +912,7 @@ def main() -> int:
             "vs_G7_w3": {"mean_gain_rel_pct": float(testsO7["gain_rel_pct"].mean()), "bas_ci_above_zero": int((testsO7["ci_lo"] > 0).sum())},
         },
         "temperature": {
-            "t_heat_c": T_HEAT_C, "t_cool_c": T_COOL_C,
+            "t_heat_c": T_HEAT_C, "t_cool_c": T_COOL_C, "t_heat_f": T_HEAT_F, "t_cool_f": T_COOL_F,
             "regime_agreement_with_peak_hour": regime_agreement,
             "means": {c: float(summary[f"wx_{c}_mean"].mean()) for c in WEATHER_COLS},
             "G3T_vs_G3": {"mean_gain_rel_pct": float(testsT["gain_rel_pct"].mean()), "bas_needing": int(testsT["needs_b"].sum()),

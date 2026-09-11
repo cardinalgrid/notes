@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-11T20:52:17+00:00",
+  "generated": "2026-09-11T21:33:59+00:00",
   "bas_eligible": 44,
   "ba_days": 172741,
   "first_date": "2015-07-01",
@@ -137,16 +137,18 @@
   },
   "temperature": {
     "t_heat_c": 15.0,
-    "t_cool_c": 22.0,
+    "t_cool_c": 22.22222222222222,
+    "t_heat_f": 59.0,
+    "t_cool_f": 72.0,
     "regime_agreement_with_peak_hour": 0.7606487313016613,
     "means": {
-      "G3_w8": 3.9658967029548706,
-      "G3R_w8": 3.5358014032750287,
-      "G3Rprev_w8": 3.796858551017384,
-      "G3T_w8": 3.6388998167506106,
-      "G3T3_w8": 3.3678525892445283,
-      "G3Tprev_w8": 3.6275088549297667,
-      "G3T3prev_w8": 3.440433281381125
+      "G3_w8": 3.9657730968422813,
+      "G3R_w8": 3.5340282284193836,
+      "G3Rprev_w8": 3.7953324586553623,
+      "G3T_w8": 3.637611220349274,
+      "G3T3_w8": 3.374394236169089,
+      "G3Tprev_w8": 3.626013353219976,
+      "G3T3prev_w8": 3.4442387943974864
     },
     "G3T_vs_G3": {
       "mean_gain_rel_pct": 8.570358051434487,
@@ -197,7 +199,7 @@
       ]
     },
     "G3T3_vs_G3": {
-      "mean_gain_rel_pct": 14.725281124833868,
+      "mean_gain_rel_pct": 14.58934459816398,
       "bas_needing": 41,
       "bas_ci_above_zero": 44
     },
@@ -207,30 +209,30 @@
       "bas_ci_above_zero": 44
     },
     "G3T3prev_vs_G3": {
-      "mean_gain_rel_pct": 12.913021089943529,
+      "mean_gain_rel_pct": 12.83582016933982,
       "bas_needing": 41,
       "bas_ci_above_zero": 44
     },
     "best_config": {
       "means": {
-        "G3_w2": 3.46468587573729,
-        "R2A1": 3.422308726840441,
-        "G3T3_w2": 3.311045452360628,
-        "BEST": 3.2102782452554295,
-        "BESTprev": 3.2728448624353366
+        "G3_w2": 3.4668124778135025,
+        "R2A1": 3.422959942878529,
+        "G3T3_w2": 3.3168728063795028,
+        "BEST": 3.215922485942102,
+        "BESTprev": 3.2758534026100135
       },
       "BEST_vs_G3_w2": {
-        "mean_gain_rel_pct": 10.40270951329093,
+        "mean_gain_rel_pct": 10.280109317471307,
         "bas_needing": 39,
-        "bas_ci_above_zero": 41
+        "bas_ci_above_zero": 42
       },
       "BESTprev_vs_G3_w2": {
-        "mean_gain_rel_pct": 7.6700894542937865,
+        "mean_gain_rel_pct": 7.638787053607566,
         "bas_needing": 34,
         "bas_ci_above_zero": 39
       },
       "BEST_vs_R2A1": {
-        "mean_gain_rel_pct": 6.855272952139217,
+        "mean_gain_rel_pct": 6.7199742130314375,
         "bas_ci_above_zero": 44
       }
     },

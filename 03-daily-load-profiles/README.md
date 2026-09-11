@@ -25,7 +25,7 @@ Which choice is right is an empirical question, and with EIA-930 it can be answe
 | G7 | one per weekday |
 
 - Special days (a priori): U.S. federal holidays and their observed days, the day after Thanksgiving, 24 and 31 December, and Super Bowl Sunday. 4.3% of BA-days.
-- A **heating/cooling regime**, read two ways. From the load: a day is a *morning-peak* day if its highest hour is 12:00 or earlier, which in practice means an electric-heating morning. From the weather: the daily mean temperature at one NOAA airport station per BA (hourly ISD-Lite observations, [`weather.py`](weather.py)) classifies a day as heating (below 15 °C), mild, or cooling (above 22 °C). The 15 °C threshold is the one that best separates morning-peak days from the rest, and it is nearly the same in every BA.
+- A **heating/cooling regime**, read two ways. From the load: a day is a *morning-peak* day if its highest hour is 12:00 or earlier, which in practice means an electric-heating morning. From the weather: the daily mean temperature at one NOAA airport station per BA (hourly ISD-Lite observations, [`weather.py`](weather.py)) classifies a day as heating (below 59 °F (15 °C)), mild, or cooling (above 72 °F (22 °C)). The 59 °F threshold is the one that best separates morning-peak days from the rest, and it is nearly the same in every BA.
 
 ## Findings
 
@@ -63,7 +63,7 @@ The days on which the most BAs departed from their own profile at the same time 
 
 Treated as a day type, this regime is worth more than any weekday distinction. Read from the load itself, splitting G3 by the day's own morning-peak regime cuts the shape error by 10.0% on average, up to 19% in AEC; yesterday's regime still gives 4.4%. The effect is concentrated in the Southeast and the Northwest, where electric heating produces a morning peak in winter, and absent in California, New York and New England.
 
-Read from the weather, the result is stronger and it no longer needs the day's own load. Temperature and the morning-peak flag agree on 76% of days. A two-class split at 15 °C of daily mean temperature cuts the error by 8.6%, with the confidence interval above zero in **all 44 BAs** (largest gains: IPCO (13%), PNM (13%), MISO (13%), AVA (13%), SWPP (12%)). A three-class split, heating below 15 °C, cooling above 22 °C, mild in between, cuts it by **14.7%**, more than 5% in 41 BAs, and beats the load-derived oracle. And **yesterday's temperature is as good as today's**: 8.7% with two classes, 12.9% with three. Weather changes slowly enough that a day-old thermometer reading is a usable day type, with no forecast at all.
+Read from the weather, the result is stronger and it no longer needs the day's own load. Temperature and the morning-peak flag agree on 76% of days. A two-class split at 59 °F (15 °C) of daily mean temperature cuts the error by 8.6%, with the confidence interval above zero in **all 44 BAs** (largest gains: IPCO (13%), PNM (13%), MISO (13%), AVA (13%), SWPP (12%)). A three-class split, heating below 59 °F, cooling above 72 °F, mild in between, cuts it by **14.6%**, more than 5% in 41 BAs, and beats the load-derived oracle. And **yesterday's temperature is as good as today's**: 8.7% with two classes, 12.8% with three. Weather changes slowly enough that a day-old thermometer reading is a usable day type, with no forecast at all.
 
 ![Temperature](figures/fig11_temperature.png)
 
@@ -103,7 +103,7 @@ Super Bowl Sunday has a signature of its own: demand falls by 3 to 4% of the dai
 
 ### 6. Putting it together
 
-The recommended configuration follows from the findings: three day types, crossed with the three-class temperature regime, with a reference set of the last two weeks plus the same three weeks of the previous year. On the days where all models can be compared, its shape error is **3.21%** against 3.46% for the plain three-type, two-week model, a 10.4% reduction with the interval above zero in 41 of 44 BAs. With yesterday's temperature instead of today's it is 3.27% (7.7%). That is the profile the anomaly detector of this initiative will use.
+The recommended configuration follows from the findings: three day types, crossed with the three-class temperature regime, with a reference set of the last two weeks plus the same three weeks of the previous year. On the days where all models can be compared, its shape error is **3.22%** against 3.47% for the plain three-type, two-week model, a 10.3% reduction with the interval above zero in 42 of 44 BAs. With yesterday's temperature instead of today's it is 3.28% (7.6%). That is the profile the anomaly detector of this initiative will use.
 
 ## What to do with this
 
@@ -111,7 +111,7 @@ For anomaly detection, gap repair and calendar features on U.S. BA load, the evi
 
 1. **Three day types, not seven**, with a reference set of the last two weeks plus the same three weeks of the previous year. A stable per-weekday adjustment adds nothing measurable; fixed seasonal classes make things worse.
 2. A **special-day list of seven entries** (New Year's Day, Memorial Day, Independence Day, Labor Day, Thanksgiving and the day after, Christmas Eve and Christmas Day, New Year's Eve) plus Super Bowl Sunday, each mapped to the Saturday or Sunday profile as in the table above, and nothing for the four minor federal holidays.
-3. A **three-class temperature regime** as a day type (heating below 15 °C, cooling above 22 °C of daily mean temperature), from a forecast when one is available and from yesterday's observation when it is not; it is worth more than every calendar distinction combined.
+3. A **three-class temperature regime** as a day type (heating below 59 °F (15 °C), cooling above 72 °F (22 °C) of daily mean temperature), from a forecast when one is available and from yesterday's observation when it is not; it is worth more than every calendar distinction combined.
 
 ## What this does not show
 

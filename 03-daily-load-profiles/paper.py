@@ -159,15 +159,16 @@ def fig_examples(sh: pd.DataFrame) -> None:
 def fig_temperature(sh: pd.DataFrame, tT: pd.DataFrame, tR: pd.DataFrame, tTp: pd.DataFrame, t_heat: float) -> None:
     fig, axes = plt.subplots(1, 2, figsize=(TWO, 3.0), gridspec_kw={"width_ratios": [1, 1.3]})
     ax = axes[0]
-    d = sh.dropna(subset=["tmean_c"])
-    bins = np.arange(-15, 36, 2.5)
+    d = sh.dropna(subset=["tmean_c"]).copy()
+    d["tmean_f"] = d["tmean_c"] * 9.0 / 5.0 + 32.0
+    bins = np.arange(0, 100, 5)
     for ba, color in (("FPC", RED), ("SOCO", ORANGE), ("PJM", NAVY), ("ERCO", TEAL), ("CISO", GRAY)):
         g = d[d["ba"] == ba]
-        m = g.groupby(pd.cut(g["tmean_c"], bins), observed=True)["regime"].agg(["mean", "size"])
+        m = g.groupby(pd.cut(g["tmean_f"], bins), observed=True)["regime"].agg(["mean", "size"])
         m = m[m["size"] >= 15]
         ax.plot([iv.mid for iv in m.index], m["mean"] * 100, marker="o", color=color, label=ba)
     ax.axvline(t_heat, color=RED, ls="--", lw=0.6)
-    ax.set_xlabel("daily mean temperature, $^\\circ$C")
+    ax.set_xlabel("daily mean temperature, $^\\circ$F")
     ax.set_ylabel("morning-peak days, %")
     ax.legend(ncol=2)
     ax = axes[1]
@@ -217,7 +218,7 @@ def render() -> Path:
     fig_regime(sh, tR, tRp)
     fig_superbowl(sb)
     fig_examples(sh)
-    fig_temperature(sh, tT, tR, tTp, s['temperature']['t_heat_c'])
+    fig_temperature(sh, tT, tR, tTp, s['temperature']['t_heat_f'])
 
     first, last = pd.Timestamp(s["first_date"]), pd.Timestamp(s["last_date"])
     w = s["window_sensitivity"]
@@ -312,7 +313,7 @@ def render() -> Path:
         "sb_sat_share": pc(s["sb_sat_share"] * 100, 0),
         "model_rows": model_rows, "season_rows": season_rows, "holiday_rows": holiday_rows, "date_rows": date_rows,
         "regime_rows": regime_rows, "station_rows": station_rows,
-        "t_heat": f"{tx['t_heat_c']:.0f}", "t_cool": f"{tx['t_cool_c']:.0f}", "t_agree": pc(tx["regime_agreement_with_peak_hour"] * 100, 0),
+        "t_heat": f"{tx['t_heat_c']:.0f}", "t_cool": f"{tx['t_cool_c']:.0f}", "t_heat_f": f"{tx['t_heat_f']:.0f}", "t_cool_f": f"{tx['t_cool_f']:.0f}", "t_agree": pc(tx["regime_agreement_with_peak_hour"] * 100, 0),
         "g3t_gain": pc(tx["G3T_vs_G3"]["mean_gain_rel_pct"]), "g3t_up": str(tx["G3T_vs_G3"]["bas_ci_above_zero"]),
         "g3t3_gain": pc(tx["G3T3_vs_G3"]["mean_gain_rel_pct"]), "g3t3_need": str(tx["G3T3_vs_G3"]["bas_needing"]),
         "g3tprev_gain": pc(tx["G3Tprev_vs_G3"]["mean_gain_rel_pct"]), "g3t3prev_gain": pc(tx["G3T3prev_vs_G3"]["mean_gain_rel_pct"]),
