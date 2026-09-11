@@ -288,7 +288,7 @@ def evaluate(sh: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
     # per-BA summary on normal days evaluated by every model
     normal = daily[daily["special"] == ""]
-    cols = [c for c in daily.columns if re.match(r"^G[12357]_w\d+$", c)]  # calendar models and window sweep only
+    cols = [c for c in daily.columns if re.match(r"^G(?:[12357]|3off)_w\d+$", c)]  # calendar models, window sweep, hybrid
     complete = normal.dropna(subset=cols)
     for ba, g in complete.groupby("ba"):
         r = {"ba": ba, "days": len(g)}

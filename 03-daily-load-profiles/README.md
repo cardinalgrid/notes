@@ -39,7 +39,7 @@ With an 8-week window, G7 has a higher shape error than G3 in **every one of the
 
 ### 2. Recency matters more than any calendar split
 
-The error of every model rises steadily with the length of the reference window: G3 goes from 3.38% at 2 weeks to 5.13% at 16 weeks. The best model in the whole grid is **G3 with a 2-week window** (3.38%). A single profile from the last 3 weeks (G1, 3.50%) beats three profiles from the last 6 weeks (3.67%). The daily shape drifts with the season faster than the weekday differences can pay for old data.
+The error of every model rises steadily with the length of the reference window: G3 goes from 3.76% at 2 weeks to 5.48% at 16 weeks. The best model in the whole grid is **G3 with a 2-week window** (3.76%). A single profile from the last 3 weeks (G1, 3.86%) beats three profiles from the last 6 weeks (4.07%). The daily shape drifts with the season faster than the weekday differences can pay for old data.
 
 A natural compromise was also tested: keep the recent three-type profile and add a *stable* weekday signature, the median residual of each weekday over the previous 52 weeks. Mondays do have such a signature (a lower early morning, still recovering from Sunday), and the adjustment helps them by 0.05 percentage points and Fridays by 0.08; but it costs about as much on the other days, and over all days it changes the error by -0.3% relative (8 BAs better, 27 worse). The weekday signature is real, stable and too small to matter.
 
