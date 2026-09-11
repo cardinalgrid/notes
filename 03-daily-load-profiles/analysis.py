@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import warnings
 
 from pathlib import Path
@@ -287,7 +288,7 @@ def evaluate(sh: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
 
     # per-BA summary on normal days evaluated by every model
     normal = daily[daily["special"] == ""]
-    cols = [c for c in daily.columns if c.startswith("G") and "peakerr" not in c]
+    cols = [c for c in daily.columns if re.match(r"^G[12357]_w\d+$", c)]  # calendar models and window sweep only
     complete = normal.dropna(subset=cols)
     for ba, g in complete.groupby("ba"):
         r = {"ba": ba, "days": len(g)}
