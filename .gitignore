@@ -5,3 +5,8 @@ paper/paper.log
 paper/paper.out
 __pycache__/
 paper/.zenodo_deposit.json
+03-daily-load-profiles/results/daily_shapes.parquet
+03-daily-load-profiles/results/daily_errors.parquet
+03-daily-load-profiles/.ruff_cache/
+03-daily-load-profiles/paper/paper.tex
+03-daily-load-profiles/paper/references.bib

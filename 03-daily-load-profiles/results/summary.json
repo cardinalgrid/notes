@@ -1,0 +1,736 @@
+{
+  "generated": "2026-09-11T19:09:49+00:00",
+  "bas_eligible": 44,
+  "ba_days": 172741,
+  "first_date": "2015-07-01",
+  "last_date": "2026-06-30",
+  "special_days_share": 0.04279817761851558,
+  "model_mean_mape": {
+    "G1": 4.331113433506086,
+    "G2": 4.181707279636652,
+    "G3": 4.206316967887082,
+    "G5": 4.273654172271271,
+    "G7": 4.391419283800167
+  },
+  "model_median_ba_mape": {
+    "G1": 4.127915597720065,
+    "G2": 3.9299926153709435,
+    "G3": 3.947846672595377,
+    "G5": 3.9935564008151867,
+    "G7": 4.117992673045567
+  },
+  "window_sensitivity": {
+    "G1_w2": 3.709362271484886,
+    "G1_w3": 3.7631026568280173,
+    "G1_w4": 3.846056341853348,
+    "G1_w6": 4.065745569050392,
+    "G1_w8": 4.331113433506086,
+    "G1_w12": 4.904568310377725,
+    "G1_w16": 5.460281164649045,
+    "G3_w2": 3.661165287803612,
+    "G3_w3": 3.699688282033553,
+    "G3_w4": 3.740808033002232,
+    "G3_w6": 3.9451050471406033,
+    "G3_w8": 4.206316967887082,
+    "G3_w12": 4.791191346213167,
+    "G3_w16": 5.356654105279689,
+    "G7_w2": 4.067799713612858,
+    "G7_w3": 4.076224052899515,
+    "G7_w4": 4.008514255995768,
+    "G7_w6": 4.165754715281917,
+    "G7_w8": 4.391419283800167,
+    "G7_w12": 4.933040378379303,
+    "G7_w16": 5.472556060940496
+  },
+  "best_model_window": [
+    "G3",
+    2
+  ],
+  "g7_vs_g3": {
+    "mean_gain_pp": -0.1935443535373511,
+    "mean_gain_rel_pct": -4.33230085309954,
+    "bas_needing_7": 0,
+    "bas_ci_above_zero": 0,
+    "bas_ci_below_zero": 44,
+    "gain_by_weekday_pp": {
+      "Mon": -0.2040401208001853,
+      "Tue": -0.2881758729721518,
+      "Wed": -0.29337438726501774,
+      "Thu": -0.3264060077471523,
+      "Fri": -0.24270537902207376,
+      "Sat": 0.0,
+      "Sun": 0.0
+    }
+  },
+  "g5_vs_g3": {
+    "mean_gain_rel_pct": -1.7580162291005612,
+    "bas_needing_5": 0
+  },
+  "g3_vs_g1": {
+    "mean_gain_rel_pct": 3.1019622738764565,
+    "bas_needing_3": 10
+  },
+  "seasonal": {
+    "means": {
+      "G3_w2": 3.7863392995258267,
+      "A1": 3.8094146537302787,
+      "R2A1": 3.634496605340094,
+      "R2A2": 3.6213465507802254,
+      "S4_w52": 4.188205584697358
+    },
+    "R2A1_vs_G3_w2": {
+      "mean_gain_rel_pct": 3.6977575772740696,
+      "bas_needing": 25,
+      "bas_ci_above_zero": 37,
+      "bas_ci_below_zero": 3
+    },
+    "R2A2_vs_G3_w2": {
+      "mean_gain_rel_pct": 3.9483198789307448,
+      "bas_needing": 24
+    },
+    "S4_vs_G3_w2": {
+      "mean_gain_rel_pct": -11.073857554967402,
+      "bas_ci_below_zero": 39
+    },
+    "gain_by_month_pp": {
+      "1": 0.138,
+      "2": 0.086,
+      "3": 0.181,
+      "4": 0.172,
+      "5": 0.211,
+      "6": 0.202,
+      "7": 0.095,
+      "8": 0.09,
+      "9": 0.116,
+      "10": 0.123,
+      "11": 0.111,
+      "12": 0.108
+    }
+  },
+  "hybrid_offset": {
+    "G3off_w3_mean": 3.721213833047348,
+    "G3off_w8_mean": 4.233153765867667,
+    "vs_G3_w3": {
+      "mean_gain_rel_pct": -0.2994368933564415,
+      "bas_needing": 0,
+      "bas_ci_above_zero": 8,
+      "bas_ci_below_zero": 27,
+      "gain_by_weekday_pp": {
+        "Mon": 0.054323471736530786,
+        "Tue": -0.041392834558867025,
+        "Wed": -0.0380114816620969,
+        "Thu": -0.045086313779063476,
+        "Fri": 0.08320444263328092,
+        "Sat": -0.06199960689202102,
+        "Sun": -0.07182736346025531
+      }
+    },
+    "vs_G3_w8": {
+      "mean_gain_rel_pct": -0.46067943393269045,
+      "bas_needing": 0,
+      "bas_ci_above_zero": 5
+    },
+    "vs_G7_w3": {
+      "mean_gain_rel_pct": 8.15275030557448,
+      "bas_ci_above_zero": 44
+    }
+  },
+  "regime_oracle_vs_g3": {
+    "mean_gain_rel_pct": 9.97741366604464,
+    "bas_needing": 32,
+    "top": [
+      {
+        "ba": "AEC",
+        "gain_rel_pct": 19.3
+      },
+      {
+        "ba": "CPLW",
+        "gain_rel_pct": 19.3
+      },
+      {
+        "ba": "CPLE",
+        "gain_rel_pct": 18.5
+      },
+      {
+        "ba": "AECI",
+        "gain_rel_pct": 18.4
+      },
+      {
+        "ba": "DUK",
+        "gain_rel_pct": 17.9
+      },
+      {
+        "ba": "TVA",
+        "gain_rel_pct": 17.4
+      },
+      {
+        "ba": "SC",
+        "gain_rel_pct": 17.1
+      },
+      {
+        "ba": "SOCO",
+        "gain_rel_pct": 16.3
+      },
+      {
+        "ba": "LGEE",
+        "gain_rel_pct": 16.1
+      },
+      {
+        "ba": "JEA",
+        "gain_rel_pct": 15.4
+      }
+    ]
+  },
+  "regime_prevday_vs_g3": {
+    "mean_gain_rel_pct": 4.386063594964566,
+    "bas_needing": 21,
+    "top": [
+      {
+        "ba": "GCPD",
+        "gain_rel_pct": 10.0
+      },
+      {
+        "ba": "PACW",
+        "gain_rel_pct": 9.1
+      },
+      {
+        "ba": "IPCO",
+        "gain_rel_pct": 7.9
+      },
+      {
+        "ba": "JEA",
+        "gain_rel_pct": 7.7
+      },
+      {
+        "ba": "AEC",
+        "gain_rel_pct": 7.5
+      },
+      {
+        "ba": "BPAT",
+        "gain_rel_pct": 7.5
+      },
+      {
+        "ba": "FPC",
+        "gain_rel_pct": 7.4
+      },
+      {
+        "ba": "SOCO",
+        "gain_rel_pct": 7.1
+      },
+      {
+        "ba": "AVA",
+        "gain_rel_pct": 7.1
+      },
+      {
+        "ba": "SC",
+        "gain_rel_pct": 6.3
+      }
+    ]
+  },
+  "morning_peak_share_by_ba": {
+    "AEC": 0.195,
+    "AECI": 0.349,
+    "AVA": 0.354,
+    "AZPS": 0.192,
+    "BANC": 0.081,
+    "BPAT": 0.461,
+    "CISO": 0.039,
+    "CPLE": 0.263,
+    "CPLW": 0.36,
+    "DUK": 0.299,
+    "EPE": 0.028,
+    "ERCO": 0.171,
+    "FMPP": 0.068,
+    "FPC": 0.094,
+    "FPL": 0.037,
+    "GCPD": 0.559,
+    "IPCO": 0.422,
+    "ISNE": 0.026,
+    "JEA": 0.146,
+    "LDWP": 0.065,
+    "LGEE": 0.334,
+    "MISO": 0.192,
+    "NEVP": 0.023,
+    "NWMT": 0.314,
+    "NYIS": 0.025,
+    "PACE": 0.164,
+    "PACW": 0.485,
+    "PGE": 0.227,
+    "PJM": 0.207,
+    "PNM": 0.081,
+    "PSCO": 0.087,
+    "PSEI": 0.308,
+    "SC": 0.237,
+    "SCEG": 0.233,
+    "SCL": 0.362,
+    "SOCO": 0.22,
+    "SRP": 0.145,
+    "SWPP": 0.321,
+    "TEC": 0.071,
+    "TEPC": 0.149,
+    "TPWR": 0.375,
+    "TVA": 0.256,
+    "WACM": 0.255,
+    "WALC": 0.29
+  },
+  "clusters_at_1_noise": {
+    "1": 37,
+    "2": 7
+  },
+  "distinctness_median_index": {
+    "Fri-Sat": 0.47,
+    "Fri-Sun": 0.68,
+    "Mon-Fri": 0.32,
+    "Mon-Sat": 0.68,
+    "Mon-Sun": 0.71,
+    "Mon-Thu": 0.19,
+    "Mon-Tue": 0.2,
+    "Mon-Wed": 0.19,
+    "Sat-Sun": 0.33,
+    "Thu-Fri": 0.19,
+    "Thu-Sat": 0.49,
+    "Thu-Sun": 0.62,
+    "Tue-Fri": 0.23,
+    "Tue-Sat": 0.54,
+    "Tue-Sun": 0.62,
+    "Tue-Thu": 0.07,
+    "Tue-Wed": 0.06,
+    "Wed-Fri": 0.22,
+    "Wed-Sat": 0.52,
+    "Wed-Sun": 0.62,
+    "Wed-Thu": 0.07
+  },
+  "holidays": {
+    "Thanksgiving": {
+      "n": 476,
+      "err_own": 6.474,
+      "err_sat": 5.475,
+      "err_sun": 6.895,
+      "share_sun": 0.113,
+      "share_sat": 0.658,
+      "share_own": 0.229
+    },
+    "Memorial Day": {
+      "n": 474,
+      "err_own": 5.949,
+      "err_sat": 5.348,
+      "err_sun": 4.276,
+      "share_sun": 0.643,
+      "share_sat": 0.207,
+      "share_own": 0.15
+    },
+    "Independence Day": {
+      "n": 511,
+      "err_own": 4.611,
+      "err_sat": 3.696,
+      "err_sun": 3.563,
+      "share_sun": 0.464,
+      "share_sat": 0.386,
+      "share_own": 0.151
+    },
+    "Juneteenth": {
+      "n": 343,
+      "err_own": 4.578,
+      "err_sat": 4.823,
+      "err_sun": 4.805,
+      "share_sun": 0.402,
+      "share_sat": 0.271,
+      "share_own": 0.327
+    },
+    "Christmas Day": {
+      "n": 560,
+      "err_own": 4.542,
+      "err_sat": 3.202,
+      "err_sun": 3.663,
+      "share_sun": 0.245,
+      "share_sat": 0.679,
+      "share_own": 0.077
+    },
+    "Day after Thanksgiving": {
+      "n": 475,
+      "err_own": 4.361,
+      "err_sat": 3.713,
+      "err_sun": 4.308,
+      "share_sun": 0.246,
+      "share_sat": 0.465,
+      "share_own": 0.288
+    },
+    "New Year's Day": {
+      "n": 604,
+      "err_own": 4.296,
+      "err_sat": 3.485,
+      "err_sun": 3.358,
+      "share_sun": 0.45,
+      "share_sat": 0.401,
+      "share_own": 0.149
+    },
+    "Veterans Day": {
+      "n": 600,
+      "err_own": 3.972,
+      "err_sat": 4.495,
+      "err_sun": 5.463,
+      "share_sun": 0.105,
+      "share_sat": 0.427,
+      "share_own": 0.468
+    },
+    "Christmas Eve": {
+      "n": 474,
+      "err_own": 3.957,
+      "err_sat": 3.102,
+      "err_sun": 4.07,
+      "share_sun": 0.154,
+      "share_sat": 0.719,
+      "share_own": 0.127
+    },
+    "Columbus Day": {
+      "n": 474,
+      "err_own": 3.833,
+      "err_sat": 4.838,
+      "err_sun": 5.436,
+      "share_sun": 0.072,
+      "share_sat": 0.27,
+      "share_own": 0.658
+    },
+    "Labor Day": {
+      "n": 472,
+      "err_own": 3.663,
+      "err_sat": 3.428,
+      "err_sun": 2.902,
+      "share_sun": 0.502,
+      "share_sat": 0.307,
+      "share_own": 0.191
+    },
+    "Super Bowl Sunday": {
+      "n": 474,
+      "err_own": 3.594,
+      "err_sat": 3.367,
+      "err_sun": 3.594,
+      "share_sun": 0.395,
+      "share_sat": 0.605,
+      "share_own": 0.0
+    },
+    "Presidents' Day": {
+      "n": 476,
+      "err_own": 3.405,
+      "err_sat": 3.947,
+      "err_sun": 3.958,
+      "share_sun": 0.263,
+      "share_sat": 0.204,
+      "share_own": 0.534
+    },
+    "New Year's Eve": {
+      "n": 417,
+      "err_own": 3.252,
+      "err_sat": 2.939,
+      "err_sun": 3.641,
+      "share_sun": 0.23,
+      "share_sat": 0.554,
+      "share_own": 0.216
+    },
+    "MLK Day": {
+      "n": 473,
+      "err_own": 3.152,
+      "err_sat": 3.401,
+      "err_sun": 3.89,
+      "share_sun": 0.129,
+      "share_sat": 0.311,
+      "share_own": 0.56
+    }
+  },
+  "extreme_dates_top": [
+    {
+      "date": "2023-11-02",
+      "n_bas": 12,
+      "label": "",
+      "median_err": 15.746320526269827,
+      "share_of_bas": 0.27906976744186046
+    },
+    {
+      "date": "2022-01-30",
+      "n_bas": 10,
+      "label": "",
+      "median_err": 19.85875899600108,
+      "share_of_bas": 0.23809523809523808
+    },
+    {
+      "date": "2025-06-09",
+      "n_bas": 10,
+      "label": "",
+      "median_err": 11.551536496618004,
+      "share_of_bas": 0.23255813953488372
+    },
+    {
+      "date": "2018-05-14",
+      "n_bas": 10,
+      "label": "",
+      "median_err": 11.07906994032988,
+      "share_of_bas": 0.22727272727272727
+    },
+    {
+      "date": "2022-12-25",
+      "n_bas": 9,
+      "label": "Christmas Day",
+      "median_err": 17.488745484301912,
+      "share_of_bas": 0.20930232558139536
+    },
+    {
+      "date": "2020-12-27",
+      "n_bas": 9,
+      "label": "",
+      "median_err": 26.90360611510954,
+      "share_of_bas": 0.20930232558139536
+    },
+    {
+      "date": "2019-10-12",
+      "n_bas": 9,
+      "label": "",
+      "median_err": 11.926516651255607,
+      "share_of_bas": 0.20454545454545456
+    },
+    {
+      "date": "2020-03-29",
+      "n_bas": 8,
+      "label": "",
+      "median_err": 22.553723253290325,
+      "share_of_bas": 0.18604651162790697
+    },
+    {
+      "date": "2023-11-03",
+      "n_bas": 8,
+      "label": "",
+      "median_err": 17.97632279729734,
+      "share_of_bas": 0.18604651162790697
+    },
+    {
+      "date": "2024-12-04",
+      "n_bas": 8,
+      "label": "",
+      "median_err": 18.118979887390232,
+      "share_of_bas": 0.18604651162790697
+    },
+    {
+      "date": "2023-05-13",
+      "n_bas": 8,
+      "label": "",
+      "median_err": 12.00943769719441,
+      "share_of_bas": 0.18604651162790697
+    },
+    {
+      "date": "2025-11-12",
+      "n_bas": 8,
+      "label": "",
+      "median_err": 18.8410841604506,
+      "share_of_bas": 0.18604651162790697
+    },
+    {
+      "date": "2020-03-28",
+      "n_bas": 8,
+      "label": "",
+      "median_err": 20.518569984197256,
+      "share_of_bas": 0.18604651162790697
+    },
+    {
+      "date": "2019-11-01",
+      "n_bas": 8,
+      "label": "",
+      "median_err": 16.648806914805412,
+      "share_of_bas": 0.18181818181818182
+    },
+    {
+      "date": "2022-06-26",
+      "n_bas": 8,
+      "label": "",
+      "median_err": 11.513930309149313,
+      "share_of_bas": 0.18604651162790697
+    }
+  ],
+  "coherent_dates_top": [
+    {
+      "date": "2019-11-01",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 8.603293224192582,
+      "share_extreme": 0.18181818181818182
+    },
+    {
+      "date": "2023-11-01",
+      "n_bas": 42,
+      "label": "",
+      "median_err": 8.16629096301703,
+      "share_extreme": 0.14285714285714285
+    },
+    {
+      "date": "2022-11-19",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.912150182976764,
+      "share_extreme": 0.09302325581395349
+    },
+    {
+      "date": "2018-05-14",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 7.856558205187421,
+      "share_extreme": 0.22727272727272727
+    },
+    {
+      "date": "2021-06-13",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 7.788675191980428,
+      "share_extreme": 0.13636363636363635
+    },
+    {
+      "date": "2018-05-07",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 7.761616539770312,
+      "share_extreme": 0.06818181818181818
+    },
+    {
+      "date": "2016-06-06",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.72153602544824,
+      "share_extreme": 0.023255813953488372
+    },
+    {
+      "date": "2024-10-19",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.4649728619561415,
+      "share_extreme": 0.046511627906976744
+    },
+    {
+      "date": "2023-05-13",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.4528189133343155,
+      "share_extreme": 0.18604651162790697
+    },
+    {
+      "date": "2020-06-03",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.379505471669099,
+      "share_extreme": 0.06976744186046512
+    },
+    {
+      "date": "2016-06-05",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 7.3290918299634535,
+      "share_extreme": 0.09090909090909091
+    },
+    {
+      "date": "2019-11-02",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.290152791053922,
+      "share_extreme": 0.18604651162790697
+    },
+    {
+      "date": "2015-11-26",
+      "n_bas": 44,
+      "label": "Thanksgiving",
+      "median_err": 7.289799590227795,
+      "share_extreme": 0.045454545454545456
+    },
+    {
+      "date": "2022-05-16",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.259079232718589,
+      "share_extreme": 0.046511627906976744
+    },
+    {
+      "date": "2022-11-20",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.254492123007962,
+      "share_extreme": 0.046511627906976744
+    },
+    {
+      "date": "2021-06-14",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 7.175981251583266,
+      "share_extreme": 0.09090909090909091
+    },
+    {
+      "date": "2016-06-04",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 7.069377493824893,
+      "share_extreme": 0.09090909090909091
+    },
+    {
+      "date": "2022-10-19",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.068163531529889,
+      "share_extreme": 0.09302325581395349
+    },
+    {
+      "date": "2020-06-04",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.056543373738017,
+      "share_extreme": 0.023255813953488372
+    },
+    {
+      "date": "2019-04-08",
+      "n_bas": 43,
+      "label": "",
+      "median_err": 7.034179868771985,
+      "share_extreme": 0.0
+    },
+    {
+      "date": "2018-05-09",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 7.026528284230004,
+      "share_extreme": 0.06818181818181818
+    },
+    {
+      "date": "2018-11-22",
+      "n_bas": 43,
+      "label": "Thanksgiving",
+      "median_err": 6.996696224863708,
+      "share_extreme": 0.046511627906976744
+    },
+    {
+      "date": "2018-05-08",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 6.993036784838117,
+      "share_extreme": 0.022727272727272728
+    },
+    {
+      "date": "2016-11-24",
+      "n_bas": 44,
+      "label": "Thanksgiving",
+      "median_err": 6.972434737801312,
+      "share_extreme": 0.0
+    },
+    {
+      "date": "2021-06-05",
+      "n_bas": 44,
+      "label": "",
+      "median_err": 6.9414965569828535,
+      "share_extreme": 0.11363636363636363
+    }
+  ],
+  "superbowl_ba_years": 474,
+  "dropped_days": 631,
+  "two_cluster_bas": [
+    "CISO",
+    "LDWP",
+    "NYIS",
+    "PGE",
+    "PSEI",
+    "SCL",
+    "TPWR"
+  ],
+  "sb_sat_share": 0.6054852320675106
+}
