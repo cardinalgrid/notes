@@ -1,6 +1,6 @@
 # Seven daily profiles, three, or none? What ten years of U.S. grid data say about Mondays, holidays and the first cold morning of the year
 
-*A plain-language version of Cardinal Grid Note 2. The numbers come from the same code and the same public data; the full note, with methods and tables, is [here](README.md).*
+*A plain-language version of Cardinal Grid Note 2 (DOI [10.5281/zenodo.22735699](https://doi.org/10.5281/zenodo.22735699)). The numbers come from the same code and the same public data; the full note, with methods and tables, is [here](README.md).*
 
 ---
 

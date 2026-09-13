@@ -284,7 +284,7 @@ def render() -> Path:
     analog_worst = worst[0] if len(worst) == 1 else ", ".join(worst[:-1]) + " and " + worst[-1]
     two = s["two_cluster_bas"]
     fields = {
-        "doi_line": "Draft, not yet published",
+        "doi_line": "DOI: 10.5281/zenodo.22735699",
         "n_bas": str(s["bas_eligible"]), "n_files": str(build_stats["bas_in_files"]),
         "ba_days": f"{s['ba_days']:,}", "dropped": f"{build_stats['days_dropped_shape_filter']:,}",
         "first_prose": f"{first.day} {first.strftime('%B %Y')}", "last_prose": f"{last.day} {last.strftime('%B %Y')}",
