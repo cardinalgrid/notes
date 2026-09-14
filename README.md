@@ -16,7 +16,7 @@ Each published note has a web version (`README.md`), an IEEE-format PDF (`paper/
 | # | Note | Target |
 |---|---|---|
 | 3 | Winter Storm Elliott, revisited with public data | October 2026 |
-| 4 | Were the "bad data" flags in the January 2024 Arctic storms really bad data? | November 2026 |
+| 4 | Would a statistical anomaly detector have thrown away the first cold morning? A test on public telemetry from the January 2024 Arctic storms | November 2026 |
 | 5 | Step loads: detecting data-center-scale structural breaks in ERCOT and PJM zonal load | November 2026 |
 | 6 | From forecast error to reserve cost: a transparent back-of-envelope for ratepayers | December 2026 |
 | 7 | How much of EIA-930 is imputed, and where? | December 2026 |
