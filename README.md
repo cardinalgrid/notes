@@ -6,7 +6,7 @@ Short, reproducible technical notes on U.S. load-forecasting and data-quality pr
 
 | # | Note | Published | DOI |
 |---|---|---|---|
-| 1 | [How well do U.S. balancing authorities forecast their own load? A 2015–2026 scorecard from EIA-930](01-ba-forecast-scorecard-2015-2026/) | 2026-09-10 | [10.5281/zenodo.22698336](https://doi.org/10.5281/zenodo.22698336) |
+| 1 | [How well do U.S. balancing authorities forecast their own load? A 2015–2026 scorecard from EIA-930](01-ba-forecast-scorecard-2015-2026/) | 2026-09-10 | [10.5281/zenodo.22749436](https://doi.org/10.5281/zenodo.22749436) |
 | 2 | [Seven daily profiles, three, or none? Weekday, day type and weather in the daily load shape of U.S. balancing authorities](03-daily-load-profiles/) | 2026-09-13 | [10.5281/zenodo.22735699](https://doi.org/10.5281/zenodo.22735699) |
 
 Each published note has a web version (`README.md`), an IEEE-format PDF (`paper/paper.pdf`) and, from No. 2, a plain-language version (`story.md`), all generated from the same script and the same numbers.
